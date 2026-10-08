@@ -1,0 +1,135 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* =========================================================
+    Theme Tokens
+   ========================================================= */
+:root {
+  /* ─── Light Mode ─── */
+    --theme-bg-main: #f8f8f6; /* Main background */
+    --theme-card-bg: #ffffff; /* Sidebar & cards background */
+    --theme-input-bg: #f0f0ed; /* Inputs & Search */
+
+    --theme-text-primary: #1a1b1d; /* Main text */
+    --theme-text-secondary: #5a5955; /* Secondary text & icons */
+
+    --theme-brand-active: #b88322; /* Active elements & buttons */
+    --theme-brand-hover: #d9a441; /* Hover state */
+
+    --theme-active-bg: #fcf4e4; /* Active link background */
+
+    --theme-border-main: #e5e5e0; /* Borders & dividers */
+    --theme-disabled: #d4d3ce; /* Disabled state */
+
+  /* ─── Statuses & Badges ─── */
+    --theme-status-success: #10b981;
+    --theme-status-warning: #f59e0b;
+    --theme-status-danger: #c6604f;
+    --theme-status-info: #3b82f6;
+}
+
+/* =========================================================
+    Dark Mode
+   ========================================================= */
+.dark {
+    --theme-bg-main: #0d0e10; /* Main background */
+    --theme-card-bg: #161719; /* Sidebar & cards background */
+    --theme-input-bg: #1a1b1d; /* Inputs & Search */
+
+    --theme-text-primary: #f2f2f0; /* Main text */
+    --theme-text-secondary: #c9c8c3; /* Secondary text & icons */
+
+    --theme-brand-active: #e3b158; /* Active text & icons */
+    --theme-brand-hover: #d9a441; /* Hover state */
+
+    --theme-active-bg: #332813; /* Active item background */
+
+    --theme-border-main: #2a2b2e; /* Borders & dividers */
+    --theme-disabled: #3a3b3e; /* Disabled state */
+
+  /* ─── Statuses & Badges ─── */
+    --theme-status-success: #34d399;
+    --theme-status-warning: #fbbf24;
+    --theme-status-danger: #c6604f;
+    --theme-status-info: #60a5fa;
+    }
+
+/* =========================================================
+    Tailwind Theme
+   ========================================================= */
+
+@theme {
+    --color-bg-main: var(--theme-bg-main);
+    --color-card-bg: var(--theme-card-bg);
+    --color-input-bg: var(--theme-input-bg);
+
+    --color-text-primary: var(--theme-text-primary);
+    --color-text-secondary: var(--theme-text-secondary);
+
+    --color-brand-active: var(--theme-brand-active);
+    --color-brand-hover: var(--theme-brand-hover);
+
+    --color-active-bg: var(--theme-active-bg);
+
+    --color-border-main: var(--theme-border-main);
+    --color-disabled: var(--theme-disabled);
+
+  /* ─── Statuses & Badges ─── */
+    --color-status-success: var(--theme-status-success);
+    --color-status-warning: var(--theme-status-warning);
+    --color-status-danger: var(--theme-status-danger);
+    --color-status-info: var(--theme-status-info);
+
+  /* ─── Typography ─── */
+    --font-sans: "Plus Jakarta Sans", sans-serif;
+}
+
+/* =========================================================
+    Global Styles
+   ========================================================= */
+html {
+    font-family: var(--font-sans);
+}
+
+body {
+    margin: 0;
+    background-color: var(--theme-bg-main);
+    color: var(--theme-text-primary);
+}
+
+/* =========================================================
+    Text Selection
+   ========================================================= */
+::selection {
+    background-color: var(--theme-brand-active);
+    color: var(--theme-bg-main);
+}
+
+/* =========================================================
+    Scrollbar Styles
+   ========================================================= */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--theme-bg-main);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--theme-brand-active);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--theme-brand-hover);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--theme-brand-active) transparent;
+}
