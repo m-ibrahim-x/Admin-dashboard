@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useMemo } from "react";
 import { login as loginApi, logout as logoutApi, authMe } from "../api/authApi";
 
 export const AuthContext = createContext(null);
@@ -57,8 +57,20 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+     // Memoize the context value to avoid unnecessary object recreation.
+    const value = useMemo(
+        () => ({
+        user,
+        token,
+        login,
+        logout,
+        loading,
+        setUser
+        }),
+        [user, token, loading, setUser]
+    );
     return (
-        <AuthContext.Provider value={{user, token, login, logout, loading}}>
+        <AuthContext.Provider value={value}>
             {children}
         </AuthContext.Provider>
     )

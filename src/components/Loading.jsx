@@ -6,7 +6,7 @@ const Loading = () => {
 
             {/* Background Glow */}
             <motion.div
-                className="absolute top-1/2 left-1/2 w-150 h-150 -translate-x-1/2 -translate-y-1/2 rounded-full bg-active/5 blur-3xl"
+                className="absolute top-1/2 left-1/2 w-150 h-150 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-active/5 blur-3xl"
                 animate={{
                     scale: [1, 1.2, 1],
                     opacity: [0.3, 0.6, 0.3],
@@ -20,7 +20,7 @@ const Loading = () => {
 
             {/* Moving Background Light */}
             <motion.div
-                className="absolute -top-40 -left-40 w-100 h-100 rounded-full bg-active/5 blur-3xl"
+                className="absolute -top-40 -left-40 w-100 h-100 rounded-full bg-brand-active/5 blur-3xl"
                 animate={{
                     x: [0, 180, 80, 0],
                     y: [0, 100, 200, 0],
@@ -34,7 +34,7 @@ const Loading = () => {
             />
 
             <motion.div
-                className="absolute -bottom-40 -right-40 w-100 h-100 rounded-full bg-active/5 blur-3xl"
+                className="absolute -bottom-40 -right-40 w-100 h-100 rounded-full bg-brand-active/5 blur-3xl"
                 animate={{
                     x: [0, -180, -80, 0],
                     y: [0, -100, -200, 0],
@@ -49,7 +49,7 @@ const Loading = () => {
 
             {/* Decorative Lines */}
             <motion.div
-                className="absolute top-1/4 left-0 w-1/4 h-px bg-active/10"
+                className="absolute top-1/4 left-0 w-1/4 h-px bg-brand-active/10"
                 animate={{
                     scaleX: [0.5, 1, 0.5],
                     opacity: [0.2, 0.6, 0.2],
@@ -62,7 +62,7 @@ const Loading = () => {
             />
 
             <motion.div
-                className="absolute bottom-1/4 right-0 w-1/4 h-px bg-active/10"
+                className="absolute bottom-1/4 right-0 w-1/4 h-px bg-brand-active/10"
                 animate={{
                     scaleX: [0.5, 1, 0.5],
                     opacity: [0.2, 0.6, 0.2],
@@ -80,10 +80,10 @@ const Loading = () => {
 
                 {/* Top Line */}
                 <motion.div
-                    className="relative w-36 h-px bg-border-custom overflow-hidden mb-8"
+                    className="relative w-36 h-px bg-border-main overflow-hidden mb-8"
                 >
                     <motion.div
-                        className="absolute inset-y-0 left-0 w-1/3 bg-active"
+                        className="absolute inset-y-0 left-0 w-1/3 bg-brand-active"
                         animate={{
                             x: ["-100%", "400%"],
                         }}
@@ -100,7 +100,7 @@ const Loading = () => {
 
                     {/* Outer Ring */}
                     <motion.div
-                        className="absolute inset-0 rounded-full border border-border-custom"
+                        className="absolute inset-0 rounded-full border border-border-main"
                         animate={{
                             scale: [1, 1.05, 1],
                             opacity: [0.5, 0.8, 0.5],
@@ -114,7 +114,7 @@ const Loading = () => {
 
                     {/* Rotating Ring */}
                     <motion.div
-                        className="absolute inset-1 rounded-full border-4 border-transparent border-t-active border-r-active"
+                        className="absolute inset-1 rounded-full border-4 border-transparent border-t-brand-active border-r-brand-active"
                         animate={{
                             rotate: 360,
                         }}
@@ -127,7 +127,7 @@ const Loading = () => {
 
                     {/* Glow */}
                     <motion.div
-                        className="absolute w-20 h-20 rounded-full bg-active/20 blur-xl"
+                        className="absolute w-20 h-20 rounded-full bg-brand-active/20 blur-xl"
                         animate={{
                             scale: [0.8, 1.3, 0.8],
                             opacity: [0.3, 0.8, 0.3],
@@ -141,7 +141,7 @@ const Loading = () => {
 
                     {/* Core */}
                     <motion.div
-                        className="relative w-12 h-12 rounded-full bg-active"
+                        className="relative w-12 h-12 rounded-full bg-brand-active"
                         animate={{
                             scale: [1, 1.12, 1],
                             boxShadow: [
@@ -169,7 +169,7 @@ const Loading = () => {
                             ease: "linear",
                         }}
                     >
-                        <span className="absolute -top-1 left-1/2 w-2.5 h-2.5 -translate-x-1/2 rounded-full bg-active shadow-[0_0_12px_var(--color-brand-active)]" />
+                        <span className="absolute -top-1 left-1/2 w-2.5 h-2.5 -translate-x-1/2 rounded-full bg-brand-active shadow-[0_0_12px_var(--color-brand-active)]" />
                     </motion.div>
                 </div>
 
@@ -177,7 +177,7 @@ const Loading = () => {
                 <div className="relative mt-8 overflow-hidden">
 
                     <motion.h1
-                        className="text-3xl font-bold tracking-[0.25em] text-border-custom"
+                        className="text-3xl font-bold tracking-[0.25em] text-border-main"
                     >
                         LOADING DATA
                     </motion.h1>
@@ -194,7 +194,7 @@ const Loading = () => {
                             ease: "easeInOut",
                         }}
                     >
-                        <h1 className="text-3xl font-bold tracking-[0.25em] text-active whitespace-nowrap">
+                        <h1 className="text-3xl font-bold tracking-[0.25em] text-brand-active whitespace-nowrap">
                             LOADING DATA
                         </h1>
                     </motion.div>
@@ -203,7 +203,7 @@ const Loading = () => {
 
                 {/* Description */}
                 <motion.p
-                    className="mt-3 text-sm text-secondary"
+                    className="mt-3 text-sm text-text-secondary"
                     animate={{
                         opacity: [0.5, 1, 0.5],
                     }}
@@ -221,11 +221,10 @@ const Loading = () => {
                     {[0, 1, 2].map((dot) => (
                         <motion.span
                             key={dot}
-                            className="w-2 h-2 rounded-full bg-active"
+                            className="w-2 h-2 rounded-full bg-brand-active"
                             animate={{
                                 y: [0, -6, 0],
                                 opacity: [0.3, 1, 0.3],
-                                scale: [1, 1.25, 1],
                             }}
                             transition={{
                                 duration: 1,
@@ -239,10 +238,10 @@ const Loading = () => {
 
                 {/* Bottom Line */}
                 <motion.div
-                    className="relative w-36 h-px bg-border-custom overflow-hidden mt-8"
+                    className="relative w-36 h-px bg-border-main overflow-hidden mt-8"
                 >
                     <motion.div
-                        className="absolute inset-y-0 left-0 w-1/3 bg-active"
+                        className="absolute inset-y-0 left-0 w-1/3 bg-brand-active"
                         animate={{
                             x: ["-100%", "400%"],
                         }}

@@ -1,22 +1,21 @@
 import { createBrowserRouter } from "react-router-dom";
 import Unauthorized from "../pages/unauthorized";
 
-import Login from "../pages/login";
-import DashboardLayout from "../layouts/dashboard-layout";
-import Dashboard from "../pages/dashboard";
-import Users from "../pages/users";
-import Products from "../pages/products";
-import AddProduct from "../pages/add-product";
-import ProductView from "../pages/product-view";
-import EditProductPage from "../pages/edit-product";
-import Orders from "../pages/orders";
-import Carts from "../pages/carts";
-import Settings from "../pages/settings";
-import AdminProfile from "../pages/admin-profile";
-import Wishlist from "../pages/wishlist";
-import ProtectedRoute from "./protected-route";
-import AdminRoute from "./admin-route";
-
+import Login from "../pages/Login";
+import DashboardLayout from "../layout/DashboardLayout";
+import Dashboard from "../pages/Dashboard";
+import Users from "../pages/Users";
+import Products from "../pages/Products";
+import AddProduct from "../pages/AddProduct";
+import ProductView from "../pages/ProductView";
+import EditProductPage from "../pages/EditProductPage";
+import Orders from "../pages/Orders";
+import Carts from "../pages/Carts";
+import Settings from "../pages/Settings";
+import AdminProfile from "../pages/AdminProfile";
+import AdminRoute from "./AdminRoute";
+import ProtectedRoute from "./ProtectedRoute";
+import Wishlist from "../pages/Wishlist";
 export const router = createBrowserRouter([
     {
         path: "/login",
