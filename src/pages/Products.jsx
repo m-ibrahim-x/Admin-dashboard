@@ -1,5 +1,7 @@
-import PagePlaceholder from "./PagePlaceholder";
+export const Products = () => {
+  return (
+    <div>Products</div>
+  )
+}
 
-const Products = () => <PagePlaceholder title="Products" />;
-
-export default Products;
+export default Products

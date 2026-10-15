@@ -36,6 +36,18 @@ export const AuthProvider = ({ children }) => {
     const login= async (email, password) =>{
         const response = await loginApi({email, password})
 
+        if (response.data.user?.role !== "admin") {
+            localStorage.removeItem("token");
+            setToken(null);
+            setUser(null);
+
+            const error = new Error(
+            "This account doesn't have admin access. Only administrators can sign in here."
+            );
+
+            error.code = "NOT_ADMIN";
+            throw error;
+        }
         localStorage.setItem("token", response.data.token)
 
         setToken(response.data.token)

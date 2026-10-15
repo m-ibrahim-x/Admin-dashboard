@@ -1,5 +1,9 @@
-import PagePlaceholder from "./PagePlaceholder";
+import React from 'react'
 
-const Users = () => <PagePlaceholder title="Users" />;
+const Users = () => {
+  return (
+    <div>Users</div>
+  )
+}
 
-export default Users;
+export default Users

@@ -252,7 +252,7 @@ const Unauthorized = () => {
             >
                 <motion.button
                 type="button"
-                onClick={() => navigate(-1)}
+                onClick={() => navigate("/login", { replace: true })}
                 whileHover={
                     shouldReduceMotion
                     ? {}
