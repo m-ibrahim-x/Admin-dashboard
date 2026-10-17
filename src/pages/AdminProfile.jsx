@@ -3,6 +3,7 @@ import { User, Mail, Phone, ShieldCheck, Save, Upload, Camera } from "lucide-rea
 import { AuthContext } from "../context/Authcontext";
 import { updateUser } from "../api/usersApi";
 import { toast } from "sonner";
+import LoginBackground from "../components/ui/LoginBackground";
 const FALLBACK_AVATAR = "https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=";
 
 const AdminProfile = () => {
@@ -96,7 +97,17 @@ const AdminProfile = () => {
         `${FALLBACK_AVATAR}${encodeURIComponent(formData.name || "Admin")}`;
 
     return (
-        <div className="p-6 bg-bg-main text-text-primary min-h-full">
+       <div className="relative isolate min-h-full p-6 text-text-primary">
+        {/* Background */}
+        <div className="absolute inset-0 -z-10 overflow-hidden">
+            <LoginBackground className="h-full w-full" />
+        </div>
+
+        {/* Page Content */}
+        <div className="relative z-10">
+            {/* انقل هنا كل محتوى الصفحة الحالي */}
+        </div>
+
         {/* Page Header */}
         <div className="mb-6">
             <h1 className="text-2xl font-bold tracking-tight text-text-primary">

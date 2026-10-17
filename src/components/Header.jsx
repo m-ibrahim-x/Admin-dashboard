@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Sun, Moon, Heart, Languages, PanelLeft } from "lucide-react";
+import { Sun, Moon, Heart, Languages, PanelLeft, Triangle } from "lucide-react";
 import { toast } from "sonner";
 
 import { ThemeContext } from "../context/Themecontext";
@@ -56,14 +56,28 @@ const Header = ({ onMenuClick }) => {
             <PanelLeft size={20} />
             </button>
 
-            <div className="min-w-0">
-            <p className="truncate text-sm font-bold text-text-primary sm:text-base">
-                Auren Panel
-            </p>
-            <p className="hidden text-xs text-text-secondary sm:block">
-                Administration Dashboard
-            </p>
+            <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="flex items-center gap-3 text-left select-none cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-active rounded-xl group"
+            aria-label="Auren E-Commerce Admin Panel"
+            title="Go to Dashboard"
+            >
+            {/* Triangle Brand Icon Box */}
+            <div className="flex size-10 sm:size-11 shrink-0 items-center justify-center rounded-2xl border border-border-main bg-active-bg text-brand-active shadow-xs transition-transform duration-200 group-hover:scale-105">
+                <Triangle size={19} className="stroke-[2.2] fill-transparent" />
             </div>
+
+            {/* Brand Title & Subtitle */}
+            <div className="min-w-0 flex flex-col justify-center">
+                <span className="truncate text-base sm:text-lg font-bold tracking-tight text-text-primary leading-tight">
+                Auren<span className="text-brand-active">.</span>
+                </span>
+                <span className="truncate text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.12em] text-text-secondary leading-tight mt-0.5">
+                E-COMMERCE ADMIN PANEL
+                </span>
+            </div>
+            </button>
         </div>
 
         {/* Right Section */}
