@@ -153,8 +153,8 @@ const DataTable = ({
                                         : rowClassName;
 
                                 const rowInteractiveClass = isInteractive
-                                    ? "cursor-pointer transition-colors hover:bg-active-bg/50 focus:outline-none focus-visible:bg-active-bg/50 focus-visible:ring-2 focus-visible:ring-brand-active focus-visible:ring-inset"
-                                    : "transition-colors hover:bg-input-bg/40";
+                                    ? "cursor-pointer transition-colors duration-200 hover:bg-active-bg focus:outline-none focus-visible:bg-active-bg focus-visible:ring-2 focus-visible:ring-brand-active focus-visible:ring-inset"
+                                    : "transition-colors duration-200 hover:bg-active-bg";
 
                                 return (
                                     <tr
