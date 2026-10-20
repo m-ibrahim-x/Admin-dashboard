@@ -1,18 +1,42 @@
 import Button from "../../ui/Button";
 import Input from "../../ui/Input";
 import { User, Camera, X, UserPen } from "lucide-react";
+import { useState} from "react";
 
-const defaultSampleUser = {
-  username: "CUSTOMER",
-  email: "customer@koda.com",
-  phone: "+1 234 567 890",
-  role: "customer",
-};
 
-const EditUserModal = ({ isOpen = false, onClose, user = defaultSampleUser }) => {
-  if (!isOpen) return null;
 
-  const currentUser = { ...defaultSampleUser, ...user };
+const EditUserModal = ({ isOpen = false, onClose, user, handleUpdateUser }) => {
+  
+  // update user
+  const [formData, setFormData] = useState({
+    username: user?.username ?? "",
+    phone: user?.phone ?? "",
+    avatar: user?.avatar ?? "",
+  });
+
+  // loading button
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  // handle update
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      setIsUpdating(true);
+
+      try {
+          const payload = {
+              username: formData.username,
+              phone: formData.phone,
+              avatar: formData.avatar,
+          };
+
+          await handleUpdateUser(user._id, payload);
+      } finally {
+          setIsUpdating(false);
+      }
+  };
+
+if (!isOpen) return null;
 
   return (
     <div
@@ -51,7 +75,7 @@ const EditUserModal = ({ isOpen = false, onClose, user = defaultSampleUser }) =>
         </div>
 
         {/* Modal Form Content */}
-        <form onSubmit={(e) => e.preventDefault()} className="p-4 sm:p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
           {/* Avatar / Profile Image Section */}
           <div className="flex items-center gap-4 p-3.5 rounded-xl bg-input-bg/40 border border-border-main/50">
             <div className="relative flex size-14 shrink-0 items-center justify-center rounded-full bg-input-bg border border-border-main text-text-secondary">
@@ -78,29 +102,44 @@ const EditUserModal = ({ isOpen = false, onClose, user = defaultSampleUser }) =>
           <Input
             id="edit-user-username"
             label="USERNAME"
-            defaultValue={currentUser.username}
+            value={formData.username}
+            onChange={(e) => 
+              setFormData((prev) =>({
+                ...prev,
+                username:e.target.value
+              }))}
             placeholder="e.g. john_doe"
-            className="h-11 rounded-xl bg-input-bg text-sm placeholder:text-text-secondary/60"
-          />
-
-          {/* Email Field */}
-          <Input
-            id="edit-user-email"
-            type="email"
-            label="EMAIL"
-            defaultValue={currentUser.email}
-            placeholder="e.g. john@email.com"
-            className="h-11 rounded-xl bg-input-bg text-sm placeholder:text-text-secondary/60"
+            className="h-11 px-5 rounded-xl bg-input-bg text-sm placeholder:text-text-secondary/60"
           />
 
           {/* Phone Field */}
           <Input
             id="edit-user-phone"
             type="tel"
+            value={formData.phone}
+            onChange={(e) => 
+              setFormData((prev) =>({
+                ...prev,
+                phone:e.target.value
+              }))}
             label="PHONE"
-            defaultValue={currentUser.phone}
             placeholder="e.g. +1 234 567 890"
-            className="h-11 rounded-xl bg-input-bg text-sm placeholder:text-text-secondary/60"
+            className="h-11 px-5 rounded-xl bg-input-bg text-sm placeholder:text-text-secondary/60"
+          />
+
+          {/* Avatar Field */}
+          <Input
+            id="edit-user-avatar"
+            type="url"
+            value={formData.avatar}
+            onChange={(e) => 
+              setFormData((prev) =>({
+                ...prev,
+                avatar:e.target.value
+              }))}
+            label="AVATAR"
+            placeholder="e.g. +1 234 567 890"
+            className="h-11 px-5 rounded-xl bg-input-bg text-sm placeholder:text-text-secondary/60"
           />
 
           {/* Subtle Horizontal Divider */}
@@ -120,6 +159,8 @@ const EditUserModal = ({ isOpen = false, onClose, user = defaultSampleUser }) =>
             </Button>
             <Button
               type="submit"
+              isLoading={isUpdating}
+              loadingText={"saving ..."}
               className="h-10 rounded-xl bg-brand-active px-5 text-sm font-bold text-bg-main hover:bg-brand-hover shadow-sm"
             >
               Save Changes

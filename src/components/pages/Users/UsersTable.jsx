@@ -5,7 +5,7 @@ import { User, CheckCircle2, XCircle, Pencil, Shield, Trash2 } from "lucide-reac
 
 
 
-const UsersTable = ({ users }) => {
+const UsersTable = ({ users , setSelectedUser, handleDeleteUser, handleChangeRole }) => {
   const columns = useMemo(
     () => [
       {
@@ -72,6 +72,7 @@ const UsersTable = ({ users }) => {
               shine={false}
               aria-label={`Edit ${row.username}`}
               title="Edit user"
+              onClick={() => setSelectedUser(row)}
               className="size-8 p-0 rounded-lg border border-status-info/20 bg-status-info/10 text-status-info hover:bg-status-info/20 shadow-none"
             >
               <Pencil size={14} />
@@ -81,6 +82,7 @@ const UsersTable = ({ users }) => {
               shine={false}
               aria-label={`Change role for ${row.username}`}
               title="Change role"
+              onClick={() => handleChangeRole(row)}
               className="size-8 p-0 rounded-lg border border-status-success/20 bg-status-success/10 text-status-success hover:bg-status-success/20 shadow-none"
             >
               <Shield size={14} />
@@ -90,6 +92,7 @@ const UsersTable = ({ users }) => {
               shine={false}
               aria-label={`Delete ${row.username}`}
               title="Delete user"
+              onClick={() => handleDeleteUser(row._id)}
               className="size-8 p-0 rounded-lg border border-status-danger/20 bg-status-danger/10 text-status-danger hover:bg-status-danger/20 shadow-none"
             >
               <Trash2 size={14} />

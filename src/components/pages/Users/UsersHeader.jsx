@@ -13,9 +13,8 @@ import { addAllUser } from "../../../api/usersApi";
 
 import Button from "../../ui/Button";
 import Input from "../../ui/Input";
-import { toast } from "sonner";
 
-const UsersHeader = () => {
+const UsersHeader = ({ searchItem, setSearchItem, handleAddUser }) => {
     const [isFormOpen, setIsFormOpen] = useState(false);
 
     const initialFormData = {
@@ -33,24 +32,19 @@ const UsersHeader = () => {
         setFormData(initialFormData);
     };
 
-    // Handle form submission
-
+    // Handle form  add
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         setSubmitting(true);
 
         try {
-            await addAllUser(formData);
+            const isSuccess = await handleAddUser (formData);
 
-            toast.success("User created successfully!");
-
-            setFormData(initialFormData);
-        } catch (error) {
-            toast.error(
-                error.response?.data?.message ||
-                "Failed to create user. Please try again."
-            );
+            if (isSuccess) {
+                setFormData(initialFormData);
+                setIsFormOpen(false);
+            }
         } finally {
             setSubmitting(false);
         }
@@ -114,7 +108,9 @@ const UsersHeader = () => {
                         <div className="w-full sm:w-60 md:w-64">
                             <Input
                                 id="search-users-input"
-                                type="text"
+                                type="search"
+                                value={searchItem}
+                                onChange={(e) => setSearchItem(e.target.value)}
                                 placeholder="Search users..."
                                 leftIcon={<Search size={16} />}
                                 className="h-10 rounded-xl bg-input-bg text-sm placeholder:text-text-secondary/70 border border-transparent focus:border-border-main"
