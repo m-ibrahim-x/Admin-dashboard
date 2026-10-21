@@ -1,5 +1,9 @@
-import PagePlaceholder from "./PagePlaceholder";
+import React from 'react'
 
-const AddProduct = () => <PagePlaceholder title="Add Product" />;
+const AddProduct = () => {
+  return (
+    <div>AddProduct</div>
+  )
+}
 
-export default AddProduct;
+export default AddProduct

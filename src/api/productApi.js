@@ -13,8 +13,19 @@ export const createProduct = (payload) =>
     },
   });
 
-export const searchProducts = (searchTerm) =>
-  api.get('/products/search', { params: { search: searchTerm } });
+// Search Products
+export const searchProducts = ({
+  search = "",
+  category = "",
+  subcategory = ""
+} = {}) =>
+  api.get('/products/search', { 
+    params: {
+      search,
+      category,
+      subcategory
+    } 
+  });
 
 // Get Product By Id
 export const getProductById = (id) => api.get(`/products/${id}`);

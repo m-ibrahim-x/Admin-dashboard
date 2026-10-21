@@ -83,6 +83,9 @@
 
   /* ─── Typography ─── */
     --font-sans: "Plus Jakarta Sans", sans-serif;
+
+    --animate-float-tip-icon: floatTipIcon 3s ease-in-out infinite;
+    --animate-cycle-tips: cycleTips 9s ease-in-out infinite;
 }
 
 /* =========================================================
@@ -211,4 +214,37 @@ body {
         var(--corner-cut-size) 100%,
         0 calc(100% - var(--corner-cut-size))
     );
+}
+
+/* Product Tips Animations */
+@keyframes floatTipIcon {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes cycleTips {
+    0%,
+    28% {
+        transform: translateY(0);
+    }
+
+    33%,
+    61% {
+        transform: translateY(-3.75rem);
+    }
+
+    66%,
+    95% {
+        transform: translateY(-7.5rem);
+    }
+
+    100% {
+        transform: translateY(0);
+  }
 }

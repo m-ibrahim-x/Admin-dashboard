@@ -11,6 +11,8 @@ import {
   ChevronRight
 } from 'lucide-react';
 import Button from './Button';
+import { useNavigate } from 'react-router-dom';
+// import ProductModal from "../product/ProductModal";
 
 /**
  * Offline SVG placeholder for products without images
@@ -45,6 +47,10 @@ const formatPrice = (val, currency = '$') => {
  * - 4 presentation-only action buttons reusing Button.jsx (View, Edit, Quick Edit, Delete)
  */
 const ProductCard = ({ product, item, className = '' }) => {
+
+  const navigate = useNavigate();
+
+  // const [ isQuickEditOpen, setIsQuickEditOpen ] = useState(false);
   const data = useMemo(() => product || item || {}, [product, item]);
 
   const [swiperInstance, setSwiperInstance] = useState(null);
@@ -379,6 +385,7 @@ const ProductCard = ({ product, item, className = '' }) => {
           <Button
             type="button"
             shine={false}
+            onClick={() => navigate(`/products/edit/${data._id}`)}
             className="w-full rounded-xl bg-input-bg text-text-primary hover:bg-border-main text-xs font-semibold py-2.5"
             leftIcon={<SquarePen className="w-4 h-4 shrink-0 text-text-secondary" aria-hidden="true" />}
             aria-label={`Edit ${name}`}
@@ -409,7 +416,13 @@ const ProductCard = ({ product, item, className = '' }) => {
           </Button>
         </div>
       </div>
+
+      {/* <ProductModal
+        isOpen={isQuickEditOpen}
+        onClose={() => setIsQuickEditOpen(false)}
+      /> */}
     </article>
+    
   );
 };
 

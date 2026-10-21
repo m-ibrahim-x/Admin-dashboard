@@ -36,13 +36,15 @@ const StatCard = ({
 
     const iconContainerClassName = [
         "flex shrink-0 items-center justify-center",
-        isVertical
+        isVertical && !iconClassName
             ? "h-10 w-10 rounded-xl border border-border-main bg-input-bg text-text-secondary"
-            : isHorizontal
-              ? "rounded-xl p-2.5 sm:rounded-2xl sm:p-3"
-              : !iconClassName
-                ? "h-12 w-12 rounded-xl bg-brand-active text-bg-main"
-                : "",
+            : isVertical
+              ? "h-10 w-10 rounded-xl"
+              : isHorizontal
+                ? "rounded-xl p-2.5 sm:rounded-2xl sm:p-3"
+                : !iconClassName
+                  ? "h-12 w-12 rounded-xl bg-brand-active text-bg-main"
+                  : "",
         !iconClassName && isHorizontal
             ? "bg-brand-active/10 text-brand-active"
             : "",
@@ -104,19 +106,26 @@ const StatCard = ({
                             isVertical ? "w-full" : ""
                         }`}
                     >
-                        <div className="flex items-start justify-between gap-3">
-                            <p className="min-w-0 truncate text-sm font-medium text-text-secondary">
-                                {title}
-                            </p>
-
-                            {meta !== undefined &&
+                        {(title ||
+                            (meta !== undefined &&
                                 meta !== null &&
-                                meta !== "" && (
-                                    <span className="shrink-0 text-xs font-medium text-text-secondary">
-                                        {meta}
-                                    </span>
+                                meta !== "")) && (
+                            <div className="flex items-start justify-between gap-3">
+                                {title && (
+                                    <p className="min-w-0 truncate text-sm font-medium text-text-secondary">
+                                        {title}
+                                    </p>
                                 )}
-                        </div>
+
+                                {meta !== undefined &&
+                                    meta !== null &&
+                                    meta !== "" && (
+                                        <span className="shrink-0 text-xs font-medium text-text-secondary">
+                                            {meta}
+                                        </span>
+                                    )}
+                            </div>
+                        )}
 
                         <p
                             className={`mt-1 truncate font-bold text-text-primary ${
