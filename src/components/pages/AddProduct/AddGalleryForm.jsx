@@ -1,27 +1,18 @@
+
+import { useEffect, useRef, useState } from "react";
 import { ImagePlus, X, Sparkles, UploadCloud } from "lucide-react";
 
-/**
- * AddGalleryForm Component (UI Only)
- *
- * Presentation component for product image gallery, preview cards,
- * upload dropzone, and rotating product tips card.
- */
-const AddGalleryForm = () => {
-  // Static dummy images for presentation and design layout preview
-  const previewImages = [
-    {
-      id: 1,
-      title: "Cover Photo",
-      url: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=600&auto=format&fit=crop",
-      badge: "Primary",
-    },
-    {
-      id: 2,
-      title: "Side Angle",
-      url: "https://images.unsplash.com/photo-1580910051074-3eb694886505?q=80&w=600&auto=format&fit=crop",
-      badge: "Gallery",
-    },
-  ];
+const MAX_IMAGES = 5;
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp"];
+
+const AddGalleryForm = ({ images, setImages }) => {
+  const fileInputRef = useRef(null);
+  const previewUrlsRef = useRef(new Set());
+
+  const [error, setError] = useState("");
+
+  const imagesCount = images.length || 0;
 
   const tips = [
     "High-quality photos from multiple angles increase buyer trust.",
@@ -29,98 +20,214 @@ const AddGalleryForm = () => {
     "Clear, specific product names rank higher than generic titles.",
   ];
 
+  useEffect(() => {
+    return () => {
+      previewUrlsRef.current.forEach((url) => {
+        URL.revokeObjectURL(url);
+      });
+
+      previewUrlsRef.current.clear();
+    };
+  }, []);
+
+  const handleFilesSelected = (event) => {
+    const selectedFiles = Array.from(event.target.files || []);
+
+    // Allow selecting the same file again.
+    event.target.value = "";
+
+    if (selectedFiles.length === 0) return;
+
+    const availableSlots = MAX_IMAGES - images.length;
+    const acceptedFiles = [];
+    const errors = [];
+
+    selectedFiles.forEach((file) => {
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        errors.push(
+          `${file.name}: only PNG, JPG, and WEBP images are allowed.`,
+        );
+        return;
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        errors.push(`${file.name}: image size must not exceed 5MB.`);
+        return;
+      }
+
+      if (acceptedFiles.length >= availableSlots) {
+        errors.push(`You can upload up to ${MAX_IMAGES} images in total.`);
+        return;
+      }
+
+      acceptedFiles.push(file);
+    });
+
+    if (acceptedFiles.length > 0) {
+      const addedImages = acceptedFiles.map((file) => {
+        const previewUrl = URL.createObjectURL(file);
+
+        previewUrlsRef.current.add(previewUrl);
+
+        return {
+          id: crypto.randomUUID(),
+          file,
+          previewUrl,
+        };
+      });
+
+      setImages((current) => [...current, ...addedImages]);
+    }
+
+    setError(errors.join(" "));
+  };
+
+  const handleRemoveImage = (id) => {
+    const imageToRemove = images.find((image) => image.id === id);
+
+    if (imageToRemove) {
+      URL.revokeObjectURL(imageToRemove.previewUrl);
+      previewUrlsRef.current.delete(imageToRemove.previewUrl);
+    }
+
+    setImages((current) => current.filter((image) => image.id !== id));
+    setError("");
+  };
+
   return (
     <div className="space-y-6 rounded-2xl border border-border-main bg-card-bg p-4 shadow-sm sm:rounded-3xl sm:p-6">
-      {/* ─── 1. Section Header ─── */}
+      {/* Section Header */}
       <div className="flex items-center gap-3 sm:gap-4">
         <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-brand-active/20 bg-brand-active/10 text-brand-active sm:size-12">
           <ImagePlus className="size-5 sm:size-6" strokeWidth={1.8} />
         </div>
+
         <div>
           <h2 className="text-base font-bold text-text-primary sm:text-lg">
             Gallery
           </h2>
+
           <p className="text-xs leading-relaxed text-text-secondary sm:text-sm">
-            Upload multiple images and preview them instantly.
+            Manage the product images.
+          </p>
+
+          <p className="mt-1 text-xs font-medium text-brand-active">
+            {imagesCount} of {MAX_IMAGES} images
           </p>
         </div>
       </div>
 
-      {/* ─── 2. Image Previews Grid ─── */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-4">
-        {previewImages.map((img, idx) => (
-          <article
-            key={img.id}
-            className="group relative overflow-hidden rounded-2xl border border-border-main bg-input-bg shadow-xs transition-all duration-200 hover:border-brand-active/40"
-          >
-            {/* Image Box */}
-            <div className="relative h-36 w-full overflow-hidden bg-input-bg sm:h-44">
-              <img
-                src={img.url}
-                alt={img.title}
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                loading="lazy"
-              />
+      {/* Product Images */}
+      {images.length > 0 ? (
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+          {images.map((image, idx) => (
+            <article
+              key={image.id}
+              className="group relative overflow-hidden rounded-2xl border border-border-main bg-input-bg shadow-xs transition-all duration-200 hover:border-brand-active/40"
+            >
+              {/* Image Box */}
+              <div className="relative h-36 w-full overflow-hidden bg-input-bg sm:h-44">
+                <img
+                  src={image.previewUrl}
+                  alt={`Product - Image ${idx + 1}`}
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  loading="lazy"
+                />
 
-              {/* Tag / Badge */}
-              <div className="absolute left-2.5 top-2.5">
-                <span className="rounded-lg border border-border-main/40 bg-card-bg/90 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-text-primary backdrop-blur-xs">
-                  {img.badge}
-                </span>
+                {/* Image Badge */}
+                <div className="absolute left-2.5 top-2.5">
+                  <span className="rounded-lg border border-border-main/40 bg-card-bg/90 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-text-primary backdrop-blur-xs">
+                    {idx === 0 ? "Primary" : "Gallery"}
+                  </span>
+                </div>
+
+                {/* Remove Image */}
+                <button
+                  type="button"
+                  aria-label={`Remove image ${idx + 1}`}
+                  onClick={() => handleRemoveImage(image.id)}
+                  className="absolute right-2.5 top-2.5 flex size-7 items-center justify-center rounded-full bg-card-bg/90 text-text-primary opacity-100 shadow-sm backdrop-blur-xs transition-all duration-200 hover:bg-status-danger hover:text-white sm:opacity-0 sm:group-hover:opacity-100"
+                >
+                  <X size={14} />
+                </button>
               </div>
 
-              {/* Hover Delete Button (UI Only) */}
-              <button
-                type="button"
-                aria-label={`Remove ${img.title}`}
-                className="absolute right-2.5 top-2.5 flex size-7 cursor-pointer items-center justify-center rounded-full bg-card-bg/90 text-text-secondary opacity-0 shadow-sm backdrop-blur-xs transition-all duration-200 hover:bg-status-danger hover:text-white group-hover:opacity-100"
-              >
-                <X size={14} />
-              </button>
-            </div>
+              {/* Image Caption */}
+              <div className="flex items-center justify-between gap-2 px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-text-secondary">
+                <span>Image {idx + 1}</span>
 
-            {/* Bottom Caption */}
-            <div className="flex items-center justify-between px-3 py-2 text-[11px] font-semibold tracking-wider text-text-secondary uppercase">
-              <span>Image {idx + 1}</span>
-              <span className="text-[10px] text-text-secondary/70 lowercase">
-                jpg • 1.2mb
-              </span>
-            </div>
-          </article>
-        ))}
-      </div>
+                <span className="text-[10px] font-medium normal-case">
+                  {idx === 0 ? "Cover Photo" : "Product Image"}
+                </span>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-dashed border-border-main p-8 text-center">
+          <ImagePlus className="mx-auto size-8 text-text-secondary" />
 
-      {/* ─── 3. Upload Dropzone ─── */}
-      <label className="group flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-brand-active/40 bg-active-bg/30 p-6 text-center transition-all duration-200 hover:border-brand-active hover:bg-active-bg/60 sm:rounded-3xl sm:p-8">
-        <div className="flex size-12 items-center justify-center rounded-2xl bg-brand-active/10 text-brand-active transition-transform duration-200 group-hover:scale-110">
+          <p className="mt-3 text-sm font-semibold text-text-primary">
+            No images available
+          </p>
+
+          <p className="mt-1 text-xs text-text-secondary">
+            Add images to display them in the product gallery.
+          </p>
+        </div>
+      )}
+
+      {/* Upload Dropzone */}
+      <button
+        type="button"
+        onClick={() => fileInputRef.current?.click()}
+        disabled={imagesCount >= MAX_IMAGES}
+        className="group flex w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-brand-active/40 bg-active-bg/30 p-6 text-center transition-colors hover:border-brand-active hover:bg-active-bg/50 disabled:cursor-not-allowed disabled:opacity-50 sm:rounded-3xl sm:p-8"
+      >
+        <span className="flex size-12 items-center justify-center rounded-2xl bg-brand-active/10 text-brand-active">
           <UploadCloud className="size-6" strokeWidth={1.8} />
-        </div>
+        </span>
 
-        <div>
-          <p className="text-sm font-semibold text-text-primary sm:text-base">
+        <span>
+          <span className="block text-sm font-semibold text-text-primary sm:text-base">
             Upload product images
-          </p>
-          <p className="mt-0.5 text-xs text-text-secondary">
-            PNG, JPG, WEBP • Multiple files supported
-          </p>
-          <p className="mt-1 text-[11px] font-medium text-brand-active">
+          </span>
+
+          <span className="mt-0.5 block text-xs text-text-secondary">
+            PNG, JPG, WEBP
+          </span>
+
+          <span className="mt-1 block text-[11px] font-medium text-brand-active">
             Up to 5 images • Max 5MB each
-          </p>
-        </div>
+          </span>
 
-        {/* Pure visual file input */}
-        <input
-          type="file"
-          accept="image/*"
-          multiple
-          className="hidden"
-          tabIndex={-1}
-          aria-hidden="true"
-          readOnly
-        />
-      </label>
+          <span className="mt-2 block text-[11px] text-text-secondary">
+            {imagesCount >= MAX_IMAGES
+              ? "Maximum number of images reached."
+              : "Select one or more images from your device."}
+          </span>
+        </span>
+      </button>
 
-      {/* ─── 4. Product Tips Card (Pure CSS Animation) ─── */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        multiple
+        onChange={handleFilesSelected}
+        disabled={imagesCount >= MAX_IMAGES}
+        className="hidden"
+        tabIndex={-1}
+        aria-label="Choose product images"
+      />
+
+      {error && (
+        <p role="alert" className="text-xs leading-relaxed text-status-danger">
+          {error}
+        </p>
+      )}
+
+      {/* Product Tips Card */}
       <div className="relative overflow-hidden rounded-2xl border border-brand-active/30 bg-active-bg/40 p-4 text-brand-active sm:rounded-3xl sm:p-5">
         <div className="flex items-center gap-3">
           <div
@@ -129,17 +236,13 @@ const AddGalleryForm = () => {
           >
             <Sparkles size={18} />
           </div>
-          <h3 className="text-sm font-bold sm:text-base">
-            Product Tips
-          </h3>
+
+          <h3 className="text-sm font-bold sm:text-base">Product Tips</h3>
         </div>
 
-        {/* Animated Carousel Content via CSS Keyframes */}
+        {/* Animated Tips */}
         <div className="relative mt-3 h-12 overflow-hidden sm:h-14">
-          <div
-            className="space-y-3"
-            style={{ animation: "cycleTips 9s ease-in-out infinite" }}
-          >
+          <div className="space-y-3 animate-cycle-tips">
             {tips.map((tip, i) => (
               <div key={i} className="h-12 sm:h-14">
                 <p className="text-xs leading-relaxed text-text-secondary sm:text-sm">
@@ -156,20 +259,6 @@ const AddGalleryForm = () => {
           <span className="h-1.5 w-2 rounded-full bg-brand-active/30" />
           <span className="h-1.5 w-2 rounded-full bg-brand-active/30" />
         </div>
-
-        {/* CSS Keyframe Definitions */}
-        <style>{`
-          @keyframes floatTipIcon {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-4px); }
-          }
-          @keyframes cycleTips {
-            0%, 28% { transform: translateY(0); }
-            33%, 61% { transform: translateY(-3.75rem); }
-            66%, 95% { transform: translateY(-7.5rem); }
-            100% { transform: translateY(0); }
-          }
-        `}</style>
       </div>
     </div>
   );

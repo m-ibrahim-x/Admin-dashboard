@@ -55,15 +55,14 @@ const AddProductHeader = () => {
                 </p>
 
                 <h1 className="mt-0.5 text-lg font-bold tracking-tight text-text-primary sm:text-xl lg:text-2xl">
-                    Launch a polished product entry
+                    Add a New Product
                 </h1>
                 </div>
             </div>
 
             {/* Description */}
             <p className="max-w-2xl text-xs leading-relaxed text-text-secondary sm:text-[13px]">
-                Add products with validation, image previews, multi-upload support,
-                and smooth UX.
+                Enter product details, upload images, and configure your product information before saving it to your catalog.
             </p>
             </div>
 
@@ -75,11 +74,11 @@ const AddProductHeader = () => {
 
             <div>
                 <span className="block text-[10px] font-bold uppercase tracking-wider text-brand-active">
-                Ready to launch
+                Ready to add a product?
                 </span>
 
                 <p className="text-xs font-semibold text-text-primary">
-                Create & save seamlessly
+                Complete the details and save your product.
                 </p>
             </div>
             </div>
