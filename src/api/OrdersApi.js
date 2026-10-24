@@ -9,9 +9,8 @@ export const getAllActiveCarts = () =>
   api.get('/orders/admin/carts');
 
 
-export const getAllOrders = () => 
-  api.get('/orders/admin');
-
+export const getAllOrders = ( params ={}) => 
+  api.get('/orders/admin', { params } );
 
 export const getOrderById = (id) => 
   api.get(`/orders/admin/${id}`);

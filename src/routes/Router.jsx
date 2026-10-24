@@ -16,6 +16,7 @@ import AdminProfile from "../pages/AdminProfile";
 import AdminRoute from "./AdminRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import Wishlist from "../pages/Wishlist";
+
 export const router = createBrowserRouter([
     {
         path: "/login",
@@ -88,5 +89,3 @@ export const router = createBrowserRouter([
         element: <Unauthorized/>
     },
 ]);
-
-
