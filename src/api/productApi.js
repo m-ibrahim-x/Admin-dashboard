@@ -1,7 +1,5 @@
 import api from './axios'
 
-
-
 // Get Products
 export const getProducts = () => api.get('/products');
 

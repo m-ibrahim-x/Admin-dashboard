@@ -1,6 +1,8 @@
 import EditDetailsForm from "../components/pages/EditProducts/EditDetailsForm";
 import EditGalleryForm from "../components/pages/EditProducts/EditGalleryForm";
 import EditProductHeader from "../components/pages/EditProducts/EditProductHeader";
+import EditProductSkeleton from "../skeleton/pages/EditProduct/EditProductSkeleton";
+import EditProductError from "../error/pages/EditProduct/EditProductError";
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import { getProductById, updateProduct } from "../api/productApi";
@@ -8,7 +10,7 @@ import { toast } from "sonner";
 
 const EditProductPage = () => {
     const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [formData, setFormData] = useState(null);
 
@@ -99,9 +101,10 @@ const EditProductPage = () => {
         "deletedImages",
         JSON.stringify(deletedImages)
         );
+
         console.log("Tags before submit:", formData.tags);
-console.log("Tags JSON:", JSON.stringify(formData.tags ?? []));
-console.log("FormData tags:", payload.get("tags"));
+        console.log("Tags JSON:", JSON.stringify(formData.tags ?? []));
+        console.log("FormData tags:", payload.get("tags"));
 
         const response = await updateProduct(product._id, payload);
         const updatedProduct = response.data.product;
@@ -134,23 +137,23 @@ console.log("FormData tags:", payload.get("tags"));
         toast.success(
         response.data.message || "Product updated successfully."
         );
-} catch (err) {
-    console.error("Update product error:", err);
-    console.log(
-        "Validation details:",
-        JSON.stringify(err.response?.data?.errors, null, 2)
-    );
+        } catch (err) {
+            console.error("Update product error:", err);
+            console.log(
+                "Validation details:",
+                JSON.stringify(err.response?.data?.errors, null, 2)
+            );
 
-    toast.error(
-        err.response?.data?.message ||
-        "Failed to update product. Please try again."
-    );
-
-}
-    finally {
-        setIsSubmitting(false);
-    }
+            toast.error(
+                err.response?.data?.message ||
+                "Failed to update product. Please try again."
+            );
+        }
+        finally {
+            setIsSubmitting(false);
+        }
     };
+
     // Fetch Product
     useEffect(() => {
         const fetchProduct = async () => {
@@ -159,7 +162,11 @@ console.log("FormData tags:", payload.get("tags"));
                 setError(null);
 
                 const response = await getProductById(id);
-                const fetchedProduct = response.data.product;
+                const fetchedProduct = response.data?.product || response.data;
+
+                if (!fetchedProduct) {
+                    throw new Error("Product data not found in response.");
+                }
 
                 console.log(response);
 
@@ -188,15 +195,13 @@ console.log("FormData tags:", payload.get("tags"));
                     "Product fetched successfully."
                 );
             } catch (err) {
-                setError(
+                const errorMessage =
                     err.response?.data?.message ||
-                    "Failed to fetch product. Please try again."
-                );
+                    err.message ||
+                    "Failed to fetch product. Please try again.";
 
-                toast.error(
-                    err.response?.data?.message ||
-                    "Failed to fetch product. Please try again."
-                );
+                setError(errorMessage);
+                toast.error(errorMessage);
             } finally {
                 setLoading(false);
             }
@@ -205,6 +210,19 @@ console.log("FormData tags:", payload.get("tags"));
         fetchProduct();
     }, [id]);
 
+    // Loading Skeleton State
+    if (loading) {
+        return <EditProductSkeleton />;
+    }
+
+    // Error State
+    if (error || !product) {
+        return (
+            <EditProductError
+                message={error || "Product not found or unavailable."}
+            />
+        );
+    }
 
     return (
         <div className="space-y-6 p-4 sm:p-6">

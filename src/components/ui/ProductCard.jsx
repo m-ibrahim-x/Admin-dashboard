@@ -5,14 +5,12 @@ import {
   Star, 
   Eye, 
   SquarePen, 
-  Zap, 
   Trash2, 
   ChevronLeft, 
   ChevronRight
 } from 'lucide-react';
 import Button from './Button';
 import { useNavigate } from 'react-router-dom';
-// import ProductModal from "../product/ProductModal";
 
 /**
  * Offline SVG placeholder for products without images
@@ -44,14 +42,14 @@ const formatPrice = (val, currency = '$') => {
  * - Product name (1-line truncated), metadata, description (2-line truncated)
  * - Prominent price & strikethrough discount/previous price
  * - Compact wrapping tags
- * - 4 presentation-only action buttons reusing Button.jsx (View, Edit, Quick Edit, Delete)
+ * - 3 action buttons reusing Button.jsx (View Details, Edit, Delete)
  */
-const ProductCard = ({ product, item, className = '' }) => {
+const ProductCard = ({ product, item, onDelete, isDeleting = false, className = '' }) => {
 
   const navigate = useNavigate();
 
-  // const [ isQuickEditOpen, setIsQuickEditOpen ] = useState(false);
   const data = useMemo(() => product || item || {}, [product, item]);
+  const productId = data._id || data.id;
 
   const [swiperInstance, setSwiperInstance] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -369,46 +367,42 @@ const ProductCard = ({ product, item, className = '' }) => {
           )}
         </div>
 
-        {/* ─── Subtle Divider & 4 Presentation-Only Action Buttons ─────────── */}
+        {/* ─── Subtle Divider & Exactly 3 Action Buttons (View Details, Edit, Delete) ─────────── */}
         <div className="grid grid-cols-2 gap-2 pt-4 border-t border-border-main mt-auto">
-          {/* Row 1: View and Edit */}
+          {/* Action 1: View Details */}
           <Button
             type="button"
             shine={false}
-            className="w-full rounded-xl bg-input-bg text-text-primary hover:bg-border-main text-xs font-semibold py-2.5"
+            onClick={() => navigate(`/products/${productId}`)}
+            className="w-full rounded-xl bg-input-bg text-text-primary hover:bg-border-main text-xs font-semibold py-2.5 cursor-pointer"
             leftIcon={<Eye className="w-4 h-4 shrink-0 text-text-secondary" aria-hidden="true" />}
-            aria-label={`View ${name}`}
+            aria-label={`View details for ${name}`}
           >
-            View
+            View Details
           </Button>
 
+          {/* Action 2: Edit */}
           <Button
             type="button"
             shine={false}
-            onClick={() => navigate(`/products/edit/${data._id}`)}
-            className="w-full rounded-xl bg-input-bg text-text-primary hover:bg-border-main text-xs font-semibold py-2.5"
+            onClick={() => navigate(`/products/edit/${productId}`)}
+            className="w-full rounded-xl bg-input-bg text-text-primary hover:bg-border-main text-xs font-semibold py-2.5 cursor-pointer"
             leftIcon={<SquarePen className="w-4 h-4 shrink-0 text-text-secondary" aria-hidden="true" />}
             aria-label={`Edit ${name}`}
           >
             Edit
           </Button>
 
-          {/* Row 2: Quick Edit and Delete */}
-          <Button
-            type="button"
-            shine={false}
-            className="w-full rounded-xl bg-input-bg text-text-primary hover:bg-border-main text-xs font-semibold py-2.5"
-            leftIcon={<Zap className="w-4 h-4 shrink-0 text-brand-active" aria-hidden="true" />}
-            aria-label={`Quick edit ${name}`}
-          >
-            Quick Edit
-          </Button>
-
+          {/* Action 3: Delete */}
           <Button
             type="button"
             variant="danger"
             shine={false}
-            className="w-full rounded-xl bg-status-danger/10 text-status-danger hover:bg-status-danger/20 text-xs font-semibold py-2.5"
+            disabled={isDeleting}
+            isLoading={isDeleting}
+            loadingText="Deleting..."
+            onClick={() => onDelete?.(productId)}
+            className="col-span-2 w-full rounded-xl bg-status-danger/10 text-status-danger hover:bg-status-danger/20 text-xs font-semibold py-2.5 cursor-pointer"
             leftIcon={<Trash2 className="w-4 h-4 shrink-0 text-status-danger" aria-hidden="true" />}
             aria-label={`Delete ${name}`}
           >
@@ -416,13 +410,7 @@ const ProductCard = ({ product, item, className = '' }) => {
           </Button>
         </div>
       </div>
-
-      {/* <ProductModal
-        isOpen={isQuickEditOpen}
-        onClose={() => setIsQuickEditOpen(false)}
-      /> */}
     </article>
-    
   );
 };
 
