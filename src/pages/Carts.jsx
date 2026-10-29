@@ -1,67 +1,121 @@
-import { useState, useMemo } from "react";
+
+import { useState, useMemo, useEffect, useRef } from "react";
 import { ShoppingCart, DollarSign, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
+
 import StatCard from "../components/ui/StatCard";
 import CartHeader from "../components/pages/Carts/CartHeader";
 import CartTable from "../components/pages/Carts/CartTable";
 import CartSummary from "../components/pages/Carts/CartSummary";
+import ProductDetailsModal from "../components/pages/Carts/ProductDetailsModal";
+import CartsSkeleton from "../skeleton/pages/Carts/CartsSkeleton";
+import CartsError from "../error/pages/Carts/CartsError";
 
-// ─── Default Mock Data matching the reference design ───
-const DEFAULT_CART_ITEMS = [
-  {
-    id: "64fa821c9a3e4b001",
-    name: "Aura Wireless Noise-Cancelling Headphones",
-    price: 129.99,
-    quantity: 2,
-    total: 259.98,
-    image:
-      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=150&auto=format&fit=crop&q=80",
-  },
-  {
-    id: "64fa821c9a3e4b002",
-    name: "Minimalist Chrono Leather Watch",
-    price: 64.99,
-    quantity: 1,
-    total: 64.99,
-    image:
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=150&auto=format&fit=crop&q=80",
-  },
-  {
-    id: "64fa821c9a3e4b003",
-    name: "Auren Pulse Smart Fitness Band",
-    price: 25.0,
-    quantity: 1,
-    total: 25.0,
-    image:
-      "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=150&auto=format&fit=crop&q=80",
-  },
-];
+import { clearCarts, getAllCarts } from "../api/cartsApi";
 
-const DEFAULT_SUMMARY = {
-  subtotal: 349.97,
-  discount: 50.0,
-  couponCode: "SUMMER2026",
-  estimatedTax: 0.0,
-  totalAmount: 299.97,
+const INITIAL_CART = {
+  itemCount: 0,
+  subtotal: 0,
+  discountAmount: 0,
+  total: 0,
+  coupon: null,
+  items: [],
 };
 
 export default function Carts() {
-  const [items, setItems] = useState(DEFAULT_CART_ITEMS);
-  const [summary, setSummary] = useState(DEFAULT_SUMMARY);
+  const [cart, setCart] = useState(INITIAL_CART);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Calculate dynamic totals if items change
-  const totalItemCount = useMemo(() => {
-    return items.reduce((acc, curr) => acc + (curr.quantity || 1), 0);
-  }, [items]);
+  const dialogRef = useRef(null);
 
-  // 4 Stat Cards configured according to the project's design system & Users.jsx pattern
+  // Fetch cart data from the API.
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchCart = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await getAllCarts();
+        const cartData = response.data?.data ?? response.data;
+
+        if (!Array.isArray(cartData?.items)) {
+          throw new Error("Invalid cart response from the server.");
+        }
+
+        // Normalize item fields for the existing CartTable.
+        const normalizedItems = cartData.items.map((item) => ({
+          ...item,
+          id: item._id ?? item.id,
+          total:
+            Number(item.price ?? 0) *
+            Number(item.quantity ?? 0),
+        }));
+
+        if (isMounted) {
+          setCart({
+            itemCount: Number(cartData.itemCount ?? 0),
+            subtotal: Number(cartData.subtotal ?? 0),
+            discountAmount: Number(cartData.discountAmount ?? 0),
+            total: Number(cartData.total ?? 0),
+            coupon: cartData.coupon ?? null,
+            items: normalizedItems,
+          });
+        }
+      } catch (err) {
+        if (isMounted) {
+          const errorMessage =
+            err.response?.data?.message ||
+            err.message ||
+            "Failed to load cart. Please try again.";
+          setError(errorMessage);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchCart();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Derive the order summary from the single cart state.
+  const summary = useMemo(
+    () => ({
+      subtotal: cart.subtotal,
+      discount: cart.discountAmount,
+      couponCode: cart.coupon || "NONE",
+      totalAmount: cart.total,
+    }),
+    [
+      cart.subtotal,
+      cart.discountAmount,
+      cart.coupon,
+      cart.total,
+    ]
+  );
+
+  // Dashboard statistics derived from the same cart state.
   const stats = [
     {
       id: "total-items",
       title: "Total Items",
-      value: String(totalItemCount),
-      subText: `Across ${items.length} distinct product lines`,
-      icon: <ShoppingCart className="size-4 sm:size-5" strokeWidth={2} />,
+      value: String(cart.itemCount),
+      subText: `Across ${cart.items.length} distinct product lines`,
+      icon: (
+        <ShoppingCart
+          className="size-4 sm:size-5"
+          strokeWidth={2}
+        />
+      ),
       borderAccent: "border-t-brand-active",
       iconContainerClass:
         "!bg-active-bg !text-brand-active border-brand-active/20",
@@ -69,9 +123,14 @@ export default function Carts() {
     {
       id: "subtotal",
       title: "Subtotal",
-      value: `$${Number(summary.subtotal).toFixed(2)}`,
+      value: `$${summary.subtotal.toFixed(2)}`,
       subText: "Gross item value",
-      icon: <DollarSign className="size-4 sm:size-5" strokeWidth={2} />,
+      icon: (
+        <DollarSign
+          className="size-4 sm:size-5"
+          strokeWidth={2}
+        />
+      ),
       borderAccent: "border-t-status-info",
       iconContainerClass:
         "!bg-status-info/10 !text-status-info border-status-info/20",
@@ -79,9 +138,14 @@ export default function Carts() {
     {
       id: "discount",
       title: "Discount",
-      value: `$${Number(summary.discount).toFixed(2)}`,
+      value: `$${summary.discount.toFixed(2)}`,
       subText: `Coupon ${summary.couponCode} savings`,
-      icon: <ShoppingBag className="size-4 sm:size-5" strokeWidth={2} />,
+      icon: (
+        <ShoppingBag
+          className="size-4 sm:size-5"
+          strokeWidth={2}
+        />
+      ),
       borderAccent: "border-t-status-warning",
       iconContainerClass:
         "!bg-status-warning/10 !text-status-warning border-status-warning/20",
@@ -89,45 +153,73 @@ export default function Carts() {
     {
       id: "net-total",
       title: "Net Total",
-      value: `$${Number(summary.totalAmount).toFixed(2)}`,
-      subText: "Payable amount with tax",
-      icon: <DollarSign className="size-4 sm:size-5" strokeWidth={2} />,
+      value: `$${summary.totalAmount.toFixed(2)}`,
+      subText: "Payable amount",
+      icon: (
+        <DollarSign
+          className="size-4 sm:size-5"
+          strokeWidth={2}
+        />
+      ),
       borderAccent: "border-t-status-success",
       iconContainerClass:
         "!bg-status-success/10 !text-status-success border-status-success/20",
     },
   ];
 
-  // Actions
   const handleViewItem = (item) => {
-    toast.info(`Viewing item details: ${item.name}`);
+    setSelectedItem(item);
+    if (dialogRef.current && !dialogRef.current.open) {
+      dialogRef.current.showModal();
+    }
   };
 
-  const handleCheckout = () => {
-    toast.success("Proceeding to checkout with current cart session.");
+  const handleCloseModal = () => {
+    setSelectedItem(null);
   };
 
-  const handleClearCart = () => {
-    setItems([]);
-    setSummary({
-      subtotal: 0,
-      discount: 0,
-      couponCode: "NONE",
-      estimatedTax: 0,
-      totalAmount: 0,
-    });
-    toast.info("Cart session has been cleared.");
-  };
+  // Clear cart
+  const handleClearCarts = async () => {
+  if (cart.items.length === 0) {
+    toast.info("Your cart is already empty.");
+    return;
+  }
+
+  try {
+    await clearCarts();
+
+    setCart(INITIAL_CART);
+
+    toast.success("Cart cleared successfully.");
+  } catch (err) {
+    toast.error(
+      err.response?.data?.message ||
+      "Failed to clear cart. Please try again."
+    );
+  }
+};
+
+  if (loading) {
+    return <CartsSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <CartsError
+        message={typeof error === "string" ? error : error?.message || "Failed to load cart."}
+      />
+    );
+  }
 
   return (
     <div className="space-y-4 p-5 min-w-0">
-      {/* ─── 1. Header & Active Promotion Banner (Component 1) ─── */}
+      {/* Header and active promotion banner */}
       <CartHeader
         couponCode={summary.couponCode}
-        discountText={`$${Number(summary.discount).toFixed(2)} off qualifying items`}
+        discountText={`${summary.discount.toFixed(2)} off qualifying items`}
       />
 
-      {/* ─── 2. Status / Statistics Cards Grid (Directly mapped in Carts.jsx) ─── */}
+      {/* Statistics cards */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
         {stats.map((stat) => (
           <StatCard
@@ -143,22 +235,29 @@ export default function Carts() {
         ))}
       </div>
 
-      {/* ─── 3. Main Content: Cart Table (Component 2) + Order Summary (Component 3) ─── */}
+      {/* Cart table and order summary */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        {/* Left: Cart Items Table */}
         <div className="lg:col-span-8 min-w-0">
-          <CartTable items={items} onViewItem={handleViewItem} />
+          <CartTable
+            items={cart.items}
+            onViewItem={handleViewItem}
+          />
         </div>
 
-        {/* Right: Order Summary Card */}
         <div className="lg:col-span-4 min-w-0">
           <CartSummary
             summary={summary}
-            onCheckout={handleCheckout}
-            onClearCart={handleClearCart}
+            onClearCarts={handleClearCarts}
           />
         </div>
       </div>
+
+      {/* Product Details Modal */}
+      <ProductDetailsModal
+        ref={dialogRef}
+        item={selectedItem}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 }
