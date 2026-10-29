@@ -1,4 +1,5 @@
 import { ImageOff } from "lucide-react";
+import Button from "../../ui/Button";
 
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80";
@@ -66,12 +67,13 @@ const ProductGallery = ({
           {validImages.map((src, i) => {
             const isSelected = selectedIndex === i;
             return (
-              <button
+              <Button
                 key={i}
                 type="button"
+                shine={false}
                 onClick={() => onSelectIndex?.(i)}
                 aria-label={`View product image ${i + 1}`}
-                className={`group relative h-16 w-20 sm:h-20 sm:w-24 shrink-0 cursor-pointer overflow-hidden rounded-xl border-2 transition-all bg-input-bg/60 ${
+                className={`group relative h-16 w-20 sm:h-20 sm:w-24 shrink-0 overflow-hidden rounded-xl border-2 p-0 transition-all bg-input-bg/60 ${
                   isSelected
                     ? "border-brand-active ring-2 ring-brand-active/20"
                     : "border-border-main/60 opacity-60 hover:opacity-100 hover:border-brand-active/40"
@@ -86,7 +88,7 @@ const ProductGallery = ({
                     e.target.src = FALLBACK_IMAGE;
                   }}
                 />
-              </button>
+              </Button>
             );
           })}
         </div>

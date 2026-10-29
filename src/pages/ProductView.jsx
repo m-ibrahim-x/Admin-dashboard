@@ -5,8 +5,8 @@ import { getProductById } from "../api/productApi";
 import ProductViewHeader from "../components/pages/ProductView/ProductViewHeader";
 import ProductGallery from "../components/pages/ProductView/ProductGallery";
 import ProductDetails from "../components/pages/ProductView/ProductDetails";
-import ProductViewSkeleton from "../skeleton/pages/ProductView/ProductViewSkeleton";
-import ProductViewError from "../error/pages/ProductView/ProductViewError";
+import ProductViewSkeleton from "../skeleton/pages/ProductViewSkeleton";
+import ProductViewError from "../error/pages/ProductViewError";
 
 const ProductView = ({ product: initialProduct }) => {
   const { id } = useParams();

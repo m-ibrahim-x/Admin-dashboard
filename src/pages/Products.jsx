@@ -5,8 +5,8 @@ import { getProducts, searchProducts, deleteProduct } from "../api/productApi"
 import { useEffect, useMemo, useState } from "react"
 import { Box, Star, CheckCircle2, XCircle } from "lucide-react"
 import { toast } from "sonner"
-import ProductsSkeleton from "../skeleton/pages/Products/ProductsSkeleton";
-import ProductsError from "../error/pages/Products/ProductsError";
+import ProductsSkeleton from "../skeleton/pages/ProductsSkeleton";
+import ProductsError from "../error/pages/ProductsError";
 
 export const Products = () => {
 

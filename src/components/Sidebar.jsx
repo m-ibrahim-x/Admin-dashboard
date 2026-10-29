@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import {
     Home,
     Users,
-    LayoutDashboard,
+    Package,
     Plus,
     ClipboardList,
     ShoppingCart,
@@ -16,6 +16,7 @@ import {
     PanelLeftOpen,
     X,
 } from "lucide-react";
+import Button from "./ui/Button";
 
 const Sidebar = ({ isMobileOpen = false, setIsMobileOpen }) => {
     const { logout } = useContext(AuthContext);
@@ -44,7 +45,7 @@ const Sidebar = ({ isMobileOpen = false, setIsMobileOpen }) => {
     const navLinks = [
         { name: "Dashboard", path: "/", icon: Home },
         { name: "Users", path: "/users", icon: Users },
-        { name: "Products", path: "/products", icon: LayoutDashboard },
+        { name: "Products", path: "/products", icon: Package },
         { name: "Add product", path: "/add-product", icon: Plus },
         { name: "Orders", path: "/orders", icon: ClipboardList },
         { name: "Cart", path: "/carts", icon: ShoppingCart },
@@ -53,12 +54,12 @@ const Sidebar = ({ isMobileOpen = false, setIsMobileOpen }) => {
 
     const handleLogout = async () => {
         try {
-        await logout();
-        toast.success("Logged out successfully.");
-        navigate("/login", { replace: true });
+            await logout();
+            toast.success("Logged out successfully.");
+            navigate("/login", { replace: true });
         } catch (error) {
-        const message = error.response?.data?.message || "Failed to log out.";
-        toast.error(message);
+            const message = error.response?.data?.message || "Failed to log out.";
+            toast.error(message);
         }
     };
 
@@ -93,17 +94,16 @@ const Sidebar = ({ isMobileOpen = false, setIsMobileOpen }) => {
                     Auren Panel
                 </h1>
                 </div>
-                <button
-                type="button"
-                onClick={() => setIsMobileOpen(false)}
-                aria-label="Close sidebar"
-                title="Close sidebar"
-                className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-active-bg 
-                transition-colors shadow-xs  cursor-pointer focus:outline-none focus-visible:ring-2 
-                focus-visible:ring-brand-active"
+                <Button
+                    type="button"
+                    shine={false}
+                    onClick={() => setIsMobileOpen(false)}
+                    aria-label="Close sidebar"
+                    title="Close sidebar"
+                    className="p-1.5 rounded-lg border-transparent text-text-secondary hover:text-text-primary hover:bg-active-bg transition-colors shadow-xs"
                 >
-                <X className="w-5 h-5 stroke-[1.8]" />
-                </button>
+                    <X className="w-5 h-5 stroke-[1.8]" />
+                </Button>
             </div>
 
             {/* Navigation Links */}
@@ -149,19 +149,18 @@ const Sidebar = ({ isMobileOpen = false, setIsMobileOpen }) => {
                 <span>My Profile</span>
                 </NavLink>
 
-                <button
-                type="button"
-                onClick={async () => {
-                    setIsMobileOpen(false);
-                    await handleLogout();
-                }}
-                className="flex w-full items-center gap-3.5 px-4 py-3 rounded-xl text-text-secondary hover:bg-status-danger/10 
-                hover:text-status-danger transition-colors duration-200 text-sm font-medium cursor-pointer focus:outline-none
-                focus-visible:ring-2 focus-visible:ring-status-danger"
+                <Button
+                    type="button"
+                    shine={false}
+                    onClick={async () => {
+                        setIsMobileOpen(false);
+                        await handleLogout();
+                    }}
+                    className="flex w-full items-center justify-start gap-3.5 px-4 py-3 rounded-xl border border-transparent bg-transparent text-text-secondary hover:bg-status-danger/10 hover:text-status-danger transition-colors duration-200 text-sm font-medium focus-visible:ring-status-danger"
+                    leftIcon={<LogOut className="w-5 h-5 stroke-[1.8] shrink-0" />}
                 >
-                <LogOut className="w-5 h-5 stroke-[1.8] shrink-0" />
-                <span>Log out</span>
-                </button>
+                    <span>Log out</span>
+                </Button>
             </div>
             </aside>
         </div>
@@ -191,20 +190,20 @@ const Sidebar = ({ isMobileOpen = false, setIsMobileOpen }) => {
                 </div>
             )}
 
-            <button
+            <Button
                 type="button"
+                shine={false}
                 onClick={() => setIsCollapsed((prev) => !prev)}
                 aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                 title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-                className="p-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-active-bg transition-colors 
-                cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-active"
+                className="p-2 rounded-xl border-transparent bg-transparent text-text-secondary hover:text-text-primary hover:bg-active-bg transition-colors"
             >
                 {isCollapsed ? (
                 <PanelLeftOpen className="w-5 h-5 stroke-[1.8]" />
                 ) : (
                 <PanelLeftClose className="w-5 h-5 stroke-[1.8]" />
                 )}
-            </button>
+            </Button>
             </div>
 
             {/* Navigation Links */}
@@ -279,22 +278,21 @@ const Sidebar = ({ isMobileOpen = false, setIsMobileOpen }) => {
             </NavLink>
 
             {/* Logout Button */}
-            <button
+            <Button
                 type="button"
+                shine={false}
                 onClick={handleLogout}
                 title={isCollapsed ? "Log out" : undefined}
                 aria-label={isCollapsed ? "Log out" : undefined}
-                className={`flex items-center rounded-xl text-text-secondary hover:bg-status-danger/10 
-                    hover:text-status-danger transition-colors duration-200 text-sm font-medium cursor-pointer 
-                    focus:outline-none focus-visible:ring-2 focus-visible:ring-status-danger ${
+                className={`flex items-center rounded-xl border border-transparent bg-transparent text-text-secondary hover:bg-status-danger/10 hover:text-status-danger transition-colors duration-200 text-sm font-medium focus-visible:ring-status-danger ${
                 isCollapsed
                     ? "justify-center p-3 w-full"
-                    : "gap-3.5 px-4 py-3 w-full"
+                    : "justify-start gap-3.5 px-4 py-3 w-full"
                 }`}
+                leftIcon={<LogOut className="w-5 h-5 stroke-[1.8] shrink-0" />}
             >
-                <LogOut className="w-5 h-5 stroke-[1.8] shrink-0" />
                 {!isCollapsed && <span className="truncate">Log out</span>}
-            </button>
+            </Button>
             </div>
         </aside>
         </>

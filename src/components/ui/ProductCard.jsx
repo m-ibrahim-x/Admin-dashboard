@@ -221,26 +221,24 @@ const ProductCard = ({ product, item, onDelete, isDeleting = false, className = 
         {/* Gallery Previous / Next Controls (Multi-image only, continuously visible) */}
         {hasMultipleImages && (
           <>
-            <button
+            <Button
               type="button"
+              shine={false}
               onClick={handlePrev}
               aria-label="Previous image"
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black/60 hover:bg-black/85 
-              text-white flex items-center justify-center backdrop-blur-xs shadow-md transition-all cursor-pointer focus:outline-none 
-              focus:ring-2 focus:ring-brand-active"
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 size-7 sm:size-8 rounded-full bg-black/60 hover:bg-black/85 text-white p-0 border-transparent backdrop-blur-xs shadow-md"
             >
               <ChevronLeft className="w-4 h-4 text-white" aria-hidden="true" />
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              shine={false}
               onClick={handleNext}
               aria-label="Next image"
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black/60 hover:bg-black/85 
-              
-              text-white flex items-center justify-center backdrop-blur-xs shadow-md transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-active"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 z-10 size-7 sm:size-8 rounded-full bg-black/60 hover:bg-black/85 text-white p-0 border-transparent backdrop-blur-xs shadow-md"
             >
               <ChevronRight className="w-4 h-4 text-white" aria-hidden="true" />
-            </button>
+            </Button>
 
             {/* Pagination Indicators (Bottom center, continuously visible) */}
             <div 

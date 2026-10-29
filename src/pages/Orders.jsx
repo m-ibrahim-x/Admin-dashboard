@@ -1,4 +1,3 @@
-
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import OrdersFilters from "../components/pages/Orders/OrdersFilters";
 import OrdersTable from "../components/pages/Orders/OrdersTable";
@@ -6,8 +5,10 @@ import OrderDetailsPanel from "../components/pages/Orders/OrderDetailsPanel";
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { getAllOrders } from "../api/OrdersApi";
-import OrdersSkeleton from "../skeleton/pages/Orders/OrdersSkeleton";
-import OrdersError from "../error/pages/Orders/OrdersError";
+import OrdersSkeleton from "../skeleton/pages/OrdersSkeleton";
+import OrdersError from "../error/pages/OrdersError";
+import Button from "../components/ui/Button";
+
 const PAGE_SIZE = 20;
 
 // Safely get a normalized string for searching and filtering.
@@ -101,7 +102,7 @@ export default function Orders() {
         setError(null);
         setIsFetchingRemaining(false);
 
-        //  frist 20 orders
+        //  first 20 orders
         const firstResponse = await getAllOrders({
           page: 1,
           limit: PAGE_SIZE,
@@ -118,12 +119,10 @@ export default function Orders() {
 
         if (cancelled) return;
 
-        
         setOrders(firstOrders);
         setCurrentPage(1);
         setLoading(false);
 
-        
         const remainingPages = Array.from(
           { length: Math.max(0, totalPages - 1) },
           (_, index) => index + 2
@@ -131,7 +130,6 @@ export default function Orders() {
 
         if (remainingPages.length === 0) return;
 
-        
         setIsFetchingRemaining(true);
 
         const remainingResponses = await Promise.all(
@@ -239,6 +237,7 @@ export default function Orders() {
   // Keep the current page valid if results shrink.
   useEffect(() => {
     if (currentPage !== safeCurrentPage) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentPage(safeCurrentPage);
     }
   }, [currentPage, safeCurrentPage]);
@@ -266,11 +265,12 @@ export default function Orders() {
 
   const handleClickOrder = (order) => {
     setSelectedOrder(order);
-  }
+  };
 
   const handleCloseOrderPanel = () => {
     setSelectedOrder(null);
-  }
+  };
+
   // Pagination controls.
   const startPage = Math.max(
     1,
@@ -328,7 +328,6 @@ export default function Orders() {
       />
 
       {/* 3. Orders Table */}
-
       {loading ? (
         <OrdersSkeleton />
       ) : error && orders.length === 0 ? (
@@ -371,42 +370,45 @@ export default function Orders() {
 
         <div className="flex justify-between items-center gap-1.5">
           {/* Previous Arrow */}
-          <button
+          <Button
             type="button"
+            shine={false}
             onClick={handlePreviousPage}
             disabled={loading || totalPages === 0 || safeCurrentPage <= 1}
             aria-label="Previous page"
-            className="flex size-8 sm:size-9 items-center justify-center rounded-xl border border-border-main bg-bg-main text-text-secondary transition-colors hover:text-text-primary hover:border-brand-active/40 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-active"
+            className="size-8 sm:size-9 rounded-xl border border-border-main bg-bg-main p-0 text-text-secondary hover:text-text-primary hover:border-brand-active/40 disabled:opacity-40"
           >
             <ChevronLeft className="size-4" />
-          </button>
+          </Button>
 
           {/* Page Numbers */}
           {pageNumbers.map((num) => {
             const isActive = num === safeCurrentPage;
 
             return (
-              <button
+              <Button
                 key={num}
                 type="button"
+                shine={false}
                 onClick={() => setCurrentPage(num)}
                 disabled={loading}
                 aria-label={`Page ${num}`}
                 aria-current={isActive ? "page" : undefined}
-                className={`flex size-8 sm:size-9 items-center justify-center rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs ${
+                className={`size-8 sm:size-9 rounded-xl text-xs sm:text-sm font-bold p-0 border-transparent ${
                   isActive
                     ? "bg-brand-active text-bg-main cursor-default"
-                    : "text-text-secondary hover:bg-input-bg hover:text-text-primary cursor-pointer"
+                    : "text-text-secondary hover:bg-input-bg hover:text-text-primary"
                 }`}
               >
                 {num}
-              </button>
+              </Button>
             );
           })}
 
           {/* Next Arrow */}
-          <button
+          <Button
             type="button"
+            shine={false}
             onClick={handleNextPage}
             disabled={
               loading ||
@@ -414,16 +416,16 @@ export default function Orders() {
               safeCurrentPage >= totalPages
             }
             aria-label="Next page"
-            className="flex size-8 sm:size-9 items-center justify-center rounded-xl border border-border-main bg-bg-main text-text-secondary transition-colors hover:text-text-primary hover:border-brand-active/40 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-active"
+            className="size-8 sm:size-9 rounded-xl border border-border-main bg-bg-main p-0 text-text-secondary hover:text-text-primary hover:border-brand-active/40 disabled:opacity-40"
           >
             <ChevronRight className="size-4" />
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* 5. Order Details Panel */}
       {selectedOrder && (
-        <OrderDetailsPanel order={selectedOrder} isOpen={Boolean(setSelectedOrder)} onClose={handleCloseOrderPanel} />
+        <OrderDetailsPanel order={selectedOrder} isOpen={Boolean(selectedOrder)} onClose={handleCloseOrderPanel} />
       )}
     </div>
   );

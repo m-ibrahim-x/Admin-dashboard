@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Plus, X, Tag, Package, DollarSign, Layers, Check } from "lucide-react";
 import Button from "../../ui/Button";
 
-const EditDetailsForm = ({ product, formData, setFormData,onSubmit, isSubmitting }) => {
+const EditDetailsForm = ({ product, formData, setFormData, onSubmit, isSubmitting }) => {
     const [newTag, setNewTag] = useState("");
 
     const tags = Array.isArray(formData.tags) ? formData.tags : [];
@@ -49,7 +49,6 @@ const EditDetailsForm = ({ product, formData, setFormData,onSubmit, isSubmitting
         });
         setNewTag("");
     };
-
 
     return (
         <form
@@ -264,15 +263,16 @@ const EditDetailsForm = ({ product, formData, setFormData,onSubmit, isSubmitting
                         placeholder="Tags are displayed below"
                         className="flex-1 rounded-xl border border-border-main bg-card-bg px-3.5 py-2 text-sm text-text-primary placeholder:text-text-secondary/50 focus:border-brand-active focus:outline-none transition-colors sm:rounded-2xl sm:py-2.5"
                     />
-                    <button
+                    <Button
                         type="button"
+                        shine={false}
                         onClick={handleAddTag}
                         aria-label="Add tag"
                         disabled={!newTag.trim()}
-                        className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand-active text-bg-main shadow-xs transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60 sm:size-11 sm:rounded-2xl"
+                        className="size-10 shrink-0 rounded-xl bg-brand-active text-bg-main shadow-xs hover:bg-brand-hover p-0 sm:size-11 sm:rounded-2xl"
                     >
                         <Plus size={18} />
-                    </button>
+                    </Button>
                 </div>
                 {/* Product Tags */}
                 <div className="flex flex-wrap gap-2 pt-1">
@@ -282,14 +282,15 @@ const EditDetailsForm = ({ product, formData, setFormData,onSubmit, isSubmitting
                             className="flex items-center gap-1.5 rounded-xl border border-brand-active/20 bg-active-bg px-3 py-1 text-xs font-semibold text-brand-active"
                         >
                             #{tag}
-                            <button
+                            <Button
                                 type="button"
+                                shine={false}
                                 onClick={() => handleRemoveTag(tag)}
                                 aria-label={`Remove tag ${tag}`}
-                                className="cursor-pointer text-text-secondary transition-colors hover:text-status-danger"
+                                className="border-0 bg-transparent p-0 text-text-secondary hover:text-status-danger hover:bg-transparent shadow-none"
                             >
                                 <X size={13} />
-                            </button>
+                            </Button>
                         </span>
                     ))}
                     {tags.length === 0 && (

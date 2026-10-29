@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-
+import Button from "../../ui/Button";
 
 export default function ProductDetailsModal({
   ref,
@@ -7,8 +7,6 @@ export default function ProductDetailsModal({
   item = null,
   onClose,
 }) {
-
-
   // Close helper for action buttons (triggers dialog's native 'close' event)
   const handleClose = (e) => {
     e?.stopPropagation();
@@ -53,14 +51,15 @@ export default function ProductDetailsModal({
           </p>
         </div>
 
-        <button
+        <Button
           type="button"
+          shine={false}
           onClick={handleClose}
           aria-label="Close modal"
-          className="rounded-lg p-1 text-text-secondary hover:text-text-primary hover:bg-input-bg transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-active"
+          className="rounded-lg p-1 text-text-secondary hover:text-text-primary hover:bg-input-bg border-transparent"
         >
           <X size={18} />
-        </button>
+        </Button>
       </div>
 
       {/* ─── Breakdown: Price, Quantity, Total ─── */}
@@ -88,13 +87,14 @@ export default function ProductDetailsModal({
       </div>
 
       {/* ─── Action Button (Close) ─── */}
-      <button
+      <Button
         type="button"
+        shine={true}
         onClick={handleClose}
-        className="w-full rounded-xl bg-brand-active hover:bg-brand-hover text-bg-main font-semibold py-3 px-4 text-center transition-colors cursor-pointer shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-active"
+        className="w-full rounded-xl bg-brand-active hover:bg-brand-hover text-bg-main font-semibold py-3 px-4 text-center"
       >
         Close
-      </button>
+      </Button>
     </dialog>
   );
 }

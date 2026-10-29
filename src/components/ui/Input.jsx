@@ -1,4 +1,3 @@
-
 import { useId, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import {
@@ -136,14 +135,14 @@ const Input = ({
                         disabled={disabled}
                         aria-label={
                             isVisible
-                                ? "إخفاء المحتوى"
-                                : "إظهار المحتوى"
+                                ? "Hide password"
+                                : "Show password"
                         }
                         aria-pressed={isVisible}
                         onClick={() =>
                             setIsVisible((previous) => !previous)
                         }
-                        className="absolute inset-y-0 end-3 z-10 flex items-center justify-center text-text-secondary transition-colors hover:text-text-primary disabled:cursor-not-allowed"
+                        className="absolute inset-y-0 end-3 z-10 flex items-center justify-center text-text-secondary transition-colors hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-active rounded-md disabled:cursor-not-allowed cursor-pointer"
                     >
                         {isVisible ? (
                             <EyeOff size={18} aria-hidden="true" />

@@ -8,8 +8,8 @@ import { useEffect, useState } from "react";
 import { getAllUsers, deleteUser, updateUser, addAllUser } from "../api/usersApi";
 import { changeRole } from "../api/authApi";
 import { toast } from "sonner";
-import UsersError from "../error/pages/Users/UsersError";
-import UsersSkeleton from "../skeleton/pages/Users/UsersSkeleton";
+import UsersError from "../error/pages/UsersError";
+import UsersSkeleton from "../skeleton/pages/UsersSkeleton";
 
 const Users = () => {
     // api

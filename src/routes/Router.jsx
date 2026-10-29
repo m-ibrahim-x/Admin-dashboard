@@ -1,91 +1,96 @@
+/* eslint-disable react-refresh/only-export-components */
+import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import Unauthorized from "../pages/unauthorized";
 
-import Login from "../pages/Login";
-import DashboardLayout from "../layout/DashboardLayout";
-import Dashboard from "../pages/Dashboard";
-import Users from "../pages/Users";
-import Products from "../pages/Products";
-import AddProduct from "../pages/AddProduct";
-import ProductView from "../pages/ProductView";
-import EditProductPage from "../pages/EditProductPage";
-import Orders from "../pages/Orders";
-import Carts from "../pages/Carts";
-import Settings from "../pages/Settings";
-import AdminProfile from "../pages/AdminProfile";
-import AdminRoute from "./AdminRoute";
 import ProtectedRoute from "./ProtectedRoute";
-import Wishlist from "../pages/Wishlist";
+import AdminRoute from "./AdminRoute";
+import DashboardLayout from "../layout/DashboardLayout";
+import PageFallback from "../components/PageFallback";
+
+// Lazy-loaded pages
+const Unauthorized = lazy(() => import("../pages/unauthorized"));
+const Login = lazy(() => import("../pages/Login"));
+const Dashboard = lazy(() => import("../pages/Dashboard"));
+const Users = lazy(() => import("../pages/Users"));
+const Products = lazy(() => import("../pages/Products"));
+const AddProduct = lazy(() => import("../pages/AddProduct"));
+const ProductView = lazy(() => import("../pages/ProductView"));
+const EditProductPage = lazy(() => import("../pages/EditProductPage"));
+const Orders = lazy(() => import("../pages/Orders"));
+const Carts = lazy(() => import("../pages/Carts"));
+const Settings = lazy(() => import("../pages/Settings"));
+const AdminProfile = lazy(() => import("../pages/AdminProfile"));
+
+// Wrap standalone lazy-loaded routes with Suspense
+const withSuspense = (element) => (
+    <Suspense fallback={<PageFallback />}>
+        {element}
+    </Suspense>
+);
 
 export const router = createBrowserRouter([
     {
         path: "/login",
-        element: <Login />,
+        element: withSuspense(<Login />),
     },
-
     {
         element: <ProtectedRoute />,
         children: [
-        {
-            element: <AdminRoute />,
-            children: [
             {
-                path: "/",
-                element: <DashboardLayout />,
+                element: <AdminRoute />,
                 children: [
-                {
-                    index: true,
-                    element: <Dashboard />,
-                },
-                {
-                    path: "users",
-                    element: <Users />,
-                },
-                {
-                    path: "products",
-                    element: <Products />,
-                },
-                {
-                    path: "add-product",
-                    element: <AddProduct />,
-                },
-                {
-                    path: "products/:id",
-                    element: <ProductView />,
-                },
-                {
-                    path: "products/edit/:id",
-                    element: <EditProductPage />,
-                },
-                {
-                    path: "orders",
-                    element: <Orders />,
-                },
-                {
-                    path: "carts",
-                    element: <Carts />,
-                },
-                {
-                    path: "settings",
-                    element: <Settings />,
-                },
-                {
-                    path: "adminProfile",
-                    element: <AdminProfile />,
-                },
-                {
-                    path: "wishlist",
-                    element: <Wishlist />,
-                },
+                    {
+                        path: "/",
+                        element: <DashboardLayout />,
+                        children: [
+                            {
+                                index: true,
+                                element: <Dashboard />,
+                            },
+                            {
+                                path: "users",
+                                element: <Users />,
+                            },
+                            {
+                                path: "products",
+                                element: <Products />,
+                            },
+                            {
+                                path: "add-product",
+                                element: <AddProduct />,
+                            },
+                            {
+                                path: "products/:id",
+                                element: <ProductView />,
+                            },
+                            {
+                                path: "products/edit/:id",
+                                element: <EditProductPage />,
+                            },
+                            {
+                                path: "orders",
+                                element: <Orders />,
+                            },
+                            {
+                                path: "carts",
+                                element: <Carts />,
+                            },
+                            {
+                                path: "settings",
+                                element: <Settings />,
+                            },
+                            {
+                                path: "adminProfile",
+                                element: <AdminProfile />,
+                            }
+                        ],
+                    },
                 ],
             },
-            ],
-        },
         ],
     },
-
     {
         path: "/unauthorized",
-        element: <Unauthorized/>
+        element: withSuspense(<Unauthorized />),
     },
 ]);

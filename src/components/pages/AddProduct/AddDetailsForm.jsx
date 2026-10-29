@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Plus,
@@ -25,11 +24,10 @@ const AddDetailsForm = ({
 
   // Handle adding a new tag.
   const handleAddTag = () => {
-
     const tag = newTag.trim();
     if (!tag) return;
 
-    if(tags.includes(tag)){
+    if (tags.includes(tag)) {
       setNewTag("");
       return;
     }
@@ -38,7 +36,7 @@ const AddDetailsForm = ({
       tags: [...(Array.isArray(prev.tags) ? prev.tags : []), tag],
     }));
     setNewTag("");
-  }
+  };
 
   // Handle removing a tag.
   const handleRemoveTag = (tagToRemove) => {
@@ -48,7 +46,7 @@ const AddDetailsForm = ({
         (tag) => tag !== tagToRemove
       ),
     }));
-  }
+  };
 
   // Handle all regular form fields through one function.
   const handleChange = (e) => {
@@ -64,6 +62,7 @@ const AddDetailsForm = ({
             : value,
     }));
   };
+
   // Clear all product fields and tags.
   const handleClearForm = () => {
     setFormData({
@@ -365,15 +364,16 @@ const AddDetailsForm = ({
             className="min-w-0 flex-1 rounded-xl border border-border-main bg-card-bg px-3.5 py-2 text-sm text-text-primary placeholder:text-text-secondary/50 transition-colors focus:border-brand-active focus:outline-none sm:rounded-2xl sm:py-2.5"
           />
 
-          <button
+          <Button
             type="button"
+            shine={false}
             onClick={handleAddTag}
             aria-label="Add tag"
             disabled={!newTag.trim()}
-            className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand-active text-bg-main shadow-xs transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60 sm:size-11 sm:rounded-2xl"
+            className="size-10 shrink-0 rounded-xl bg-brand-active text-bg-main shadow-xs hover:bg-brand-hover p-0 sm:size-11 sm:rounded-2xl"
           >
             <Plus size={18} />
-          </button>
+          </Button>
         </div>
 
         <div className="flex flex-wrap gap-2 pt-1">
@@ -384,14 +384,15 @@ const AddDetailsForm = ({
             >
               #{tag}
 
-              <button
+              <Button
                 type="button"
+                shine={false}
                 onClick={() => handleRemoveTag(tag)}
                 aria-label={`Remove tag ${tag}`}
-                className="cursor-pointer text-text-secondary transition-colors hover:text-status-danger"
+                className="border-0 bg-transparent p-0 text-text-secondary hover:text-status-danger hover:bg-transparent shadow-none"
               >
                 <X size={13} />
-              </button>
+              </Button>
             </span>
           ))}
 

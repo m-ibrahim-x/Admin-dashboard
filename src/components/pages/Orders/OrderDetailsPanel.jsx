@@ -214,14 +214,15 @@ export default function OrderDetailsPanel({ order, isOpen, onClose }) {
             </div>
           </div>
 
-          <button
+          <Button
             type="button"
+            shine={false}
             onClick={onClose}
             aria-label="Close order details"
-            className="rounded-xl p-2 text-text-secondary hover:bg-input-bg hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-active cursor-pointer"
+            className="rounded-xl p-2 text-text-secondary hover:bg-input-bg hover:text-text-primary border-transparent"
           >
             <X className="size-5" />
-          </button>
+          </Button>
         </div>
 
         {/* Panel Scrollable Content */}

@@ -1,8 +1,19 @@
 import { AlertCircle, RotateCcw } from "lucide-react";
-import Button from "../../../components/ui/Button";
+import Button from "../../components/ui/Button";
 
-const OrdersError = ({
-  message = "Failed to load orders. Please try again.",
+/**
+ * DashboardError Component
+ *
+ * Dedicated page-level error state component for the Dashboard page.
+ * Uses existing design tokens and visual hierarchy matching the dashboard style.
+ * Supports an optional retry callback.
+ *
+ * @param {Object} props
+ * @param {string} [props.message="Failed to load dashboard statistics. Please try refreshing the page."] - Error message to display.
+ * @param {Function} [props.onRetry] - Optional callback to retry loading dashboard statistics.
+ */
+const DashboardError = ({
+  message = "Failed to load dashboard statistics. Please try refreshing the page.",
   onRetry,
 }) => {
   const hasRetry = typeof onRetry === "function";
@@ -17,15 +28,15 @@ const OrdersError = ({
 
         {/* Error Heading */}
         <h3 className="text-base sm:text-lg font-bold tracking-tight text-text-primary">
-          Failed to Load Orders
+          Failed to Load Dashboard
         </h3>
 
         {/* Error Message */}
-        <p className="mt-1.5 max-w-md text-xs sm:text-sm text-text-secondary">
+        <p className="mt-1.5 max-w-md text-xs sm:text-sm text-text-secondary leading-relaxed">
           {message}
         </p>
 
-        {/* Retry Button */}
+        {/* Retry Button - rendered only when onRetry is provided */}
         {hasRetry && (
           <div className="mt-4">
             <Button
@@ -43,4 +54,4 @@ const OrdersError = ({
   );
 };
 
-export default OrdersError;
+export default DashboardError;

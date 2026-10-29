@@ -22,7 +22,7 @@ This document establishes the verified design system for the **Auren E-Commerce 
   - `TopProducts.jsx` (Product leaderboards, ranking indicators)
 - **App Shell & Layout**: `src/layout/DashboardLayout.jsx`, `src/components/Header.jsx`, `src/components/Sidebar.jsx`
 - **Shared UI Library**: `src/components/ui/` (`Button.jsx`, `StatCard.jsx`, `Input.jsx`, `DataTable.jsx`, `ProductCard.jsx`)
-- **Feedback & Fallbacks**: `src/skeleton/pages/Dashbord/`, `src/error/pages/Dashboard/`
+- **Feedback & Fallbacks**: `src/skeleton/pages/`, `src/error/pages/`
 
 ---
 
@@ -375,7 +375,7 @@ rounded-full border-2 border-card-bg bg-brand-active px-1 text-[10px] font-bold 
 
 ### 7. Empty & Error States
 
-- **Error Fallback Card** (`src/error/pages/Dashboard/`):
+- **Error Fallback Card** (`src/error/pages/`):
   - Container: `rounded-2xl border border-border-main bg-card-bg p-6 sm:p-8 text-center shadow-sm`
   - Danger Icon Container: `size-12 rounded-2xl border border-status-danger/20 bg-status-danger/10 text-status-danger mb-3 flex items-center justify-center`
   - Title: `text-base sm:text-lg font-bold tracking-tight text-text-primary`
@@ -387,7 +387,7 @@ rounded-full border-2 border-card-bg bg-brand-active px-1 text-[10px] font-bold 
 
 ---
 
-### 8. Loading Skeletons (`src/skeleton/pages/Dashbord/`)
+### 8. Loading Skeletons (`src/skeleton/pages/`)
 
 - Base animation: `animate-pulse` on parent container.
 - Placeholder background: `bg-input-bg` (adapts automatically to dark mode).

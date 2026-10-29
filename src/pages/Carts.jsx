@@ -8,8 +8,8 @@ import CartHeader from "../components/pages/Carts/CartHeader";
 import CartTable from "../components/pages/Carts/CartTable";
 import CartSummary from "../components/pages/Carts/CartSummary";
 import ProductDetailsModal from "../components/pages/Carts/ProductDetailsModal";
-import CartsSkeleton from "../skeleton/pages/Carts/CartsSkeleton";
-import CartsError from "../error/pages/Carts/CartsError";
+import CartsSkeleton from "../skeleton/pages/CartsSkeleton";
+import CartsError from "../error/pages/CartsError";
 
 import { clearCarts, getAllCarts } from "../api/cartsApi";
 

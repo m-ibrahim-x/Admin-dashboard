@@ -1,8 +1,8 @@
 import EditDetailsForm from "../components/pages/EditProducts/EditDetailsForm";
 import EditGalleryForm from "../components/pages/EditProducts/EditGalleryForm";
 import EditProductHeader from "../components/pages/EditProducts/EditProductHeader";
-import EditProductSkeleton from "../skeleton/pages/EditProduct/EditProductSkeleton";
-import EditProductError from "../error/pages/EditProduct/EditProductError";
+import EditProductSkeleton from "../skeleton/pages/EditProductSkeleton";
+import EditProductError from "../error/pages/EditProductError";
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import { getProductById, updateProduct } from "../api/productApi";

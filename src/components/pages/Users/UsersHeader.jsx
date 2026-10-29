@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -9,7 +8,6 @@ import {
     ChevronUp,
     X,
 } from "lucide-react";
-import { addAllUser } from "../../../api/usersApi";
 
 import Button from "../../ui/Button";
 import Input from "../../ui/Input";
@@ -32,14 +30,14 @@ const UsersHeader = ({ searchItem, setSearchItem, handleAddUser }) => {
         setFormData(initialFormData);
     };
 
-    // Handle form  add
+    // Handle form add
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         setSubmitting(true);
 
         try {
-            const isSuccess = await handleAddUser (formData);
+            const isSuccess = await handleAddUser(formData);
 
             if (isSuccess) {
                 setFormData(initialFormData);
@@ -49,7 +47,6 @@ const UsersHeader = ({ searchItem, setSearchItem, handleAddUser }) => {
             setSubmitting(false);
         }
     };
-
 
     return (
         <div className="space-y-4 p-5">
@@ -184,14 +181,15 @@ const UsersHeader = ({ searchItem, setSearchItem, handleAddUser }) => {
                                     </div>
                                 </div>
 
-                                <button
+                                <Button
                                     type="button"
+                                    shine={false}
                                     onClick={() => setIsFormOpen(false)}
                                     aria-label="Close user creation form"
-                                    className="rounded-lg p-1.5 text-text-secondary transition-colors hover:bg-card-bg hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-active cursor-pointer"
+                                    className="rounded-lg p-1.5 text-text-secondary hover:bg-card-bg hover:text-text-primary border-transparent"
                                 >
                                     <X size={18} />
-                                </button>
+                                </Button>
                             </div>
 
                             {/* Form Content */}

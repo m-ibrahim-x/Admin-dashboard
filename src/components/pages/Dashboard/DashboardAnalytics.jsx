@@ -7,8 +7,6 @@ import {
   XCircle,
 } from "lucide-react";
 import AnalyticsChart from "./AnalyticsChart";
-import AnalyticsSkeleton from "../../../skeleton/pages/Dashbord/AnalyticsSkeleton";
-import AnalyticsError from "../../../error/pages/Dashboard/AnalyticsError";
 
 const orderStatuses = [
   { id: "pending", title: "Pending", icon: Clock3, color: "warning" },
@@ -48,16 +46,8 @@ const statusStyles = {
 
 const formatNumber = (value) => Number(value ?? 0).toLocaleString("en-US");
 
-const DashboardAnalytics = ({ data, loading, error }) => {
-  if (loading) {
-    return <AnalyticsSkeleton />;
-  }
-
-  if (error || !data) {
-    return <AnalyticsError />;
-  }
-
-  const orders = data.orders ?? {};
+const DashboardAnalytics = ({ data }) => {
+  const orders = data?.orders ?? {};
   const totalOrders = Number(orders.total ?? 0);
 
   // mock data to try out the chart

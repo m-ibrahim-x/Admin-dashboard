@@ -8,19 +8,9 @@ import {
   Users,
 } from "lucide-react";
 import StatCard from "../../ui/StatCard";
-import OverviewSkeleton from "../../../skeleton/pages/Dashbord/OverviewSkeleton";
-import OverviewError from "../../../error/pages/Dashboard/OverviewError";
 
 // dashboard stats data
-const DashboardOverview = ({ data, loading, error }) => {
-  if (loading) {
-    return <OverviewSkeleton />;
-  }
-
-  if (error || !data) {
-    return <OverviewError />;
-  }
-
+const DashboardOverview = ({ data }) => {
   const stats = data
     ? [
         {

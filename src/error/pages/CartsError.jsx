@@ -1,18 +1,23 @@
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, RotateCcw } from "lucide-react";
+import Button from "../../components/ui/Button";
 
 /**
  * CartsError Component
  *
  * Dedicated error state component for the Carts page.
  * Uses existing design tokens and visual hierarchy matching the dashboard style.
- * Does not include a retry button, API requests, or navigation.
+ * Supports an optional retry callback.
  *
  * @param {Object} props
  * @param {string} [props.message="Failed to load cart."] - Error message to display.
+ * @param {Function} [props.onRetry] - Optional callback to retry loading cart data.
  */
 export default function CartsError({
   message = "Failed to load cart.",
+  onRetry,
 }) {
+  const hasRetry = typeof onRetry === "function";
+
   return (
     <section className="p-5" role="alert" aria-live="assertive">
       <div className="flex min-h-72 flex-col items-center justify-center rounded-2xl border border-border-main bg-card-bg p-6 sm:p-8 text-center shadow-sm">
@@ -30,6 +35,20 @@ export default function CartsError({
         <p className="mt-1.5 max-w-md text-xs sm:text-sm text-text-secondary leading-relaxed">
           {message}
         </p>
+
+        {/* Retry Button - rendered only when onRetry is provided */}
+        {hasRetry && (
+          <div className="mt-4">
+            <Button
+              type="button"
+              onClick={onRetry}
+              leftIcon={<RotateCcw size={16} />}
+              className="h-10 rounded-xl bg-brand-active px-5 text-sm font-semibold text-bg-main hover:bg-brand-hover shadow-sm cursor-pointer"
+            >
+              Try Again
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );

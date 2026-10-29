@@ -1,6 +1,6 @@
-
 import { useEffect, useRef, useState } from "react";
 import { ImagePlus, X, Sparkles, UploadCloud } from "lucide-react";
+import Button from "../../ui/Button";
 
 const MAX_IMAGES = 5;
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -21,12 +21,13 @@ const AddGalleryForm = ({ images, setImages }) => {
   ];
 
   useEffect(() => {
+    const urls = previewUrlsRef.current;
     return () => {
-      previewUrlsRef.current.forEach((url) => {
+      urls.forEach((url) => {
         URL.revokeObjectURL(url);
       });
 
-      previewUrlsRef.current.clear();
+      urls.clear();
     };
   }, []);
 
@@ -142,14 +143,15 @@ const AddGalleryForm = ({ images, setImages }) => {
                 </div>
 
                 {/* Remove Image */}
-                <button
+                <Button
                   type="button"
+                  shine={false}
                   aria-label={`Remove image ${idx + 1}`}
                   onClick={() => handleRemoveImage(image.id)}
-                  className="absolute right-2.5 top-2.5 flex size-7 items-center justify-center rounded-full bg-card-bg/90 text-text-primary opacity-100 shadow-sm backdrop-blur-xs transition-all duration-200 hover:bg-status-danger hover:text-white sm:opacity-0 sm:group-hover:opacity-100"
+                  className="absolute right-2.5 top-2.5 size-7 rounded-full bg-card-bg/90 text-text-primary opacity-100 shadow-sm backdrop-blur-xs hover:bg-status-danger hover:text-white sm:opacity-0 sm:group-hover:opacity-100 p-0 border-transparent"
                 >
                   <X size={14} />
-                </button>
+                </Button>
               </div>
 
               {/* Image Caption */}

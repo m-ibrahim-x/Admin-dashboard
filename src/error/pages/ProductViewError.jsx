@@ -1,20 +1,23 @@
-import { AlertCircle, ArrowLeft } from "lucide-react";
+import { AlertCircle, ArrowLeft, RotateCcw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import Button from "../../../components/ui/Button";
+import Button from "../../components/ui/Button";
 
 /**
- * EditProductError Component
+ * ProductViewError Component
  *
- * Dedicated error state component for the Edit Product page.
- * Displays an error alert card with a fallback message and back-navigation.
+ * Dedicated error state component for the Product Details (ProductView) page.
+ * Displays an error alert card with a fallback message, back-navigation, and optional retry.
  *
  * @param {Object} props
- * @param {string} [props.message="Failed to load product details for editing. Please try again."] - Error or not-found message.
+ * @param {string} [props.message="Failed to load product details. Please try again."] - Error or not-found message.
+ * @param {Function} [props.onRetry] - Optional retry callback.
  */
-const EditProductError = ({
-  message = "Failed to load product details for editing. Please try again.",
+const ProductViewError = ({
+  message = "Failed to load product details. Please try again.",
+  onRetry,
 }) => {
   const navigate = useNavigate();
+  const hasRetry = typeof onRetry === "function";
 
   return (
     <div
@@ -52,8 +55,18 @@ const EditProductError = ({
           {message}
         </p>
 
-        {/* Action Button */}
+        {/* Action Buttons */}
         <div className="mt-5 flex items-center gap-3">
+          {hasRetry && (
+            <Button
+              type="button"
+              onClick={onRetry}
+              leftIcon={<RotateCcw size={16} />}
+              className="h-9 rounded-xl bg-brand-active px-4 text-xs font-semibold text-bg-main hover:bg-brand-hover shadow-sm cursor-pointer"
+            >
+              Try Again
+            </Button>
+          )}
           <Button
             type="button"
             shine={false}
@@ -69,4 +82,4 @@ const EditProductError = ({
   );
 };
 
-export default EditProductError;
+export default ProductViewError;

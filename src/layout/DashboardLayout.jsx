@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
+import PageFallback from "../components/PageFallback";
 
 const DashboardLayout = () => {
     const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -21,7 +22,9 @@ const DashboardLayout = () => {
 
                 {/* Independently Scrollable Page Content */}
                 <main className="flex-1 min-h-0 overflow-y-auto">
-                    <Outlet />
+                    <Suspense fallback={<PageFallback />}>
+                        <Outlet />
+                    </Suspense>
                 </main>
             </div>
         </div>

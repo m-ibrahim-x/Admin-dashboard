@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Package, Eye } from "lucide-react";
 import DataTable from "../../ui/DataTable";
+import Button from "../../ui/Button";
 
 export default function CartTable({ items = [], onViewItem }) {
   const columns = useMemo(
@@ -68,15 +69,16 @@ export default function CartTable({ items = [], onViewItem }) {
         align: "right",
         render: (_, row) => (
           <div className="flex items-center justify-end">
-            <button
+            <Button
               type="button"
+              shine={false}
               onClick={() => onViewItem?.(row)}
               title="View Details"
               aria-label={`View details for ${row.name}`}
-              className="inline-flex size-8 items-center justify-center rounded-lg border border-border-main bg-input-bg text-text-secondary hover:text-text-primary hover:border-brand-active/40 transition-colors shadow-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-active"
+              className="size-8 rounded-lg border border-border-main bg-input-bg text-text-secondary hover:text-text-primary hover:border-brand-active/40 p-0"
             >
               <Eye size={15} />
-            </button>
+            </Button>
           </div>
         ),
       },

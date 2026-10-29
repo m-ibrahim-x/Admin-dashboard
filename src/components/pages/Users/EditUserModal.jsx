@@ -1,12 +1,9 @@
 import Button from "../../ui/Button";
 import Input from "../../ui/Input";
 import { User, Camera, X, UserPen } from "lucide-react";
-import { useState} from "react";
-
-
+import { useState } from "react";
 
 const EditUserModal = ({ isOpen = false, onClose, user, handleUpdateUser }) => {
-  
   // update user
   const [formData, setFormData] = useState({
     username: user?.username ?? "",
@@ -19,24 +16,24 @@ const EditUserModal = ({ isOpen = false, onClose, user, handleUpdateUser }) => {
 
   // handle update
   const handleSubmit = async (e) => {
-      e.preventDefault();
+    e.preventDefault();
 
-      setIsUpdating(true);
+    setIsUpdating(true);
 
-      try {
-          const payload = {
-              username: formData.username,
-              phone: formData.phone,
-              avatar: formData.avatar,
-          };
+    try {
+      const payload = {
+        username: formData.username,
+        phone: formData.phone,
+        avatar: formData.avatar,
+      };
 
-          await handleUpdateUser(user._id, payload);
-      } finally {
-          setIsUpdating(false);
-      }
+      await handleUpdateUser(user._id, payload);
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
-if (!isOpen) return null;
+  if (!isOpen) return null;
 
   return (
     <div
@@ -64,14 +61,15 @@ if (!isOpen) return null;
               </p>
             </div>
           </div>
-          <button
+          <Button
             type="button"
+            shine={false}
             onClick={onClose}
             aria-label="Close modal"
-            className="rounded-lg p-1.5 text-text-secondary transition-colors hover:bg-card-bg hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-active cursor-pointer"
+            className="rounded-lg p-1.5 text-text-secondary hover:bg-card-bg hover:text-text-primary border-transparent"
           >
             <X size={18} />
-          </button>
+          </Button>
         </div>
 
         {/* Modal Form Content */}
@@ -80,13 +78,14 @@ if (!isOpen) return null;
           <div className="flex items-center gap-4 p-3.5 rounded-xl bg-input-bg/40 border border-border-main/50">
             <div className="relative flex size-14 shrink-0 items-center justify-center rounded-full bg-input-bg border border-border-main text-text-secondary">
               <User className="size-7" />
-              <button
+              <Button
                 type="button"
+                shine={false}
                 aria-label="Change avatar"
-                className="absolute -bottom-1 -end-1 flex size-6 items-center justify-center rounded-full bg-brand-active text-bg-main shadow-xs hover:bg-brand-hover transition-colors cursor-pointer"
+                className="absolute -bottom-1 -end-1 size-6 rounded-full bg-brand-active text-bg-main p-0 hover:bg-brand-hover border-transparent"
               >
                 <Camera size={12} />
-              </button>
+              </Button>
             </div>
             <div className="min-w-0">
               <p className="text-xs font-semibold uppercase tracking-wider text-text-primary">
@@ -104,9 +103,9 @@ if (!isOpen) return null;
             label="USERNAME"
             value={formData.username}
             onChange={(e) => 
-              setFormData((prev) =>({
+              setFormData((prev) => ({
                 ...prev,
-                username:e.target.value
+                username: e.target.value
               }))}
             placeholder="e.g. john_doe"
             className="h-11 px-5 rounded-xl bg-input-bg text-sm placeholder:text-text-secondary/60"
@@ -118,9 +117,9 @@ if (!isOpen) return null;
             type="tel"
             value={formData.phone}
             onChange={(e) => 
-              setFormData((prev) =>({
+              setFormData((prev) => ({
                 ...prev,
-                phone:e.target.value
+                phone: e.target.value
               }))}
             label="PHONE"
             placeholder="e.g. +1 234 567 890"
@@ -133,9 +132,9 @@ if (!isOpen) return null;
             type="url"
             value={formData.avatar}
             onChange={(e) => 
-              setFormData((prev) =>({
+              setFormData((prev) => ({
                 ...prev,
-                avatar:e.target.value
+                avatar: e.target.value
               }))}
             label="AVATAR"
             placeholder="e.g. +1 234 567 890"
@@ -160,7 +159,7 @@ if (!isOpen) return null;
             <Button
               type="submit"
               isLoading={isUpdating}
-              loadingText={"saving ..."}
+              loadingText={"Saving..."}
               className="h-10 rounded-xl bg-brand-active px-5 text-sm font-bold text-bg-main hover:bg-brand-hover shadow-sm"
             >
               Save Changes
