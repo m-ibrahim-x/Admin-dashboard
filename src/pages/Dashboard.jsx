@@ -6,7 +6,7 @@ import DashboardError from "../error/pages/DashboardError";
 import useDashboardStats from "../hooks/useDashboardStats";
 
 const Dashboard = () => {
-  const { data, loading, error } = useDashboardStats();
+  const { data, loading, error, refetch } = useDashboardStats();
 
   if (loading) {
     return <DashboardSkeleton />;
@@ -16,6 +16,7 @@ const Dashboard = () => {
     return (
       <DashboardError
         message={typeof error === "string" ? error : undefined}
+        onRetry={refetch}
       />
     );
   }

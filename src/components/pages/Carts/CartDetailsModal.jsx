@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import Button from "../../ui/Button";
 
-export default function ProductDetailsModal({
+export default function CartDetailsModal({
   ref,
   id = "product-details-modal",
   item = null,

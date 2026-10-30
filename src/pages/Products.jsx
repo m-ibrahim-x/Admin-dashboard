@@ -2,7 +2,7 @@ import ProductsFilters from "../components/pages/Products/ProductsFilters"
 import ProductsHeader from "../components/pages/Products/ProductsHeader"
 import ProductCard from "../components/ui/ProductCard"
 import { getProducts, searchProducts, deleteProduct } from "../api/productApi"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, useCallback } from "react"
 import { Box, Star, CheckCircle2, XCircle } from "lucide-react"
 import { toast } from "sonner"
 import ProductsSkeleton from "../skeleton/pages/ProductsSkeleton";
@@ -69,23 +69,30 @@ export const Products = () => {
   ], [products])
 
   // fetch products
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-        const response = await getProducts()
-        setProducts(response.data.products || [])
-      } catch (err) {
-        const errorMessage = err.response?.data?.message || err.message || 'Failed to fetch products'
-        setError(errorMessage)
-        toast.error(errorMessage)
-      } finally {
-        setLoading(false)
-      }
+  const fetchProducts = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      
+      const response = await getProducts()
+      setProducts(response.data.products || [])
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        'Failed to fetch products'
+
+      setError(errorMessage)
+      toast.error(errorMessage)
+    } finally {
+      setLoading(false)
     }
+  }, [])
+
+  useEffect(() => {
     fetchProducts()
-  },[])
+  }, [fetchProducts])
+
 
   // handle filters
   const handleApplyFilters = async (filters) => {
@@ -157,7 +164,7 @@ export const Products = () => {
 
   // error
   if (error) {
-    return <ProductsError message={error} />;
+    return <ProductsError message={error} onRetry={fetchProducts} />;
   }
 
   return (

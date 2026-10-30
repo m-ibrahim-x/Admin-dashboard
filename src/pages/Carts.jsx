@@ -1,5 +1,5 @@
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { ShoppingCart, DollarSign, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 
@@ -7,7 +7,7 @@ import StatCard from "../components/ui/StatCard";
 import CartHeader from "../components/pages/Carts/CartHeader";
 import CartTable from "../components/pages/Carts/CartTable";
 import CartSummary from "../components/pages/Carts/CartSummary";
-import ProductDetailsModal from "../components/pages/Carts/ProductDetailsModal";
+import CartDetailsModal from "../components/pages/Carts/CartDetailsModal";
 import CartsSkeleton from "../skeleton/pages/CartsSkeleton";
 import CartsError from "../error/pages/CartsError";
 
@@ -31,61 +31,50 @@ export default function Carts() {
   const dialogRef = useRef(null);
 
   // Fetch cart data from the API.
-  useEffect(() => {
-    let isMounted = true;
+  const fetchCart = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-    const fetchCart = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+      const response = await getAllCarts();
+      const cartData = response.data?.data ?? response.data;
 
-        const response = await getAllCarts();
-        const cartData = response.data?.data ?? response.data;
-
-        if (!Array.isArray(cartData?.items)) {
-          throw new Error("Invalid cart response from the server.");
-        }
-
-        // Normalize item fields for the existing CartTable.
-        const normalizedItems = cartData.items.map((item) => ({
-          ...item,
-          id: item._id ?? item.id,
-          total:
-            Number(item.price ?? 0) *
-            Number(item.quantity ?? 0),
-        }));
-
-        if (isMounted) {
-          setCart({
-            itemCount: Number(cartData.itemCount ?? 0),
-            subtotal: Number(cartData.subtotal ?? 0),
-            discountAmount: Number(cartData.discountAmount ?? 0),
-            total: Number(cartData.total ?? 0),
-            coupon: cartData.coupon ?? null,
-            items: normalizedItems,
-          });
-        }
-      } catch (err) {
-        if (isMounted) {
-          const errorMessage =
-            err.response?.data?.message ||
-            err.message ||
-            "Failed to load cart. Please try again.";
-          setError(errorMessage);
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+      if (!Array.isArray(cartData?.items)) {
+        throw new Error("Invalid cart response from the server.");
       }
-    };
 
-    fetchCart();
+      // Normalize item fields for the existing CartTable.
+      const normalizedItems = cartData.items.map((item) => ({
+        ...item,
+        id: item._id ?? item.id,
+        total:
+          Number(item.price ?? 0) *
+          Number(item.quantity ?? 0),
+      }));
 
-    return () => {
-      isMounted = false;
-    };
+      setCart({
+        itemCount: Number(cartData.itemCount ?? 0),
+        subtotal: Number(cartData.subtotal ?? 0),
+        discountAmount: Number(cartData.discountAmount ?? 0),
+        total: Number(cartData.total ?? 0),
+        coupon: cartData.coupon ?? null,
+        items: normalizedItems,
+      });
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to load cart. Please try again.";
+
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchCart();
+  }, [fetchCart]);
 
   // Derive the order summary from the single cart state.
   const summary = useMemo(
@@ -207,6 +196,7 @@ export default function Carts() {
     return (
       <CartsError
         message={typeof error === "string" ? error : error?.message || "Failed to load cart."}
+        onRetry={fetchCart}
       />
     );
   }
@@ -253,7 +243,7 @@ export default function Carts() {
       </div>
 
       {/* Product Details Modal */}
-      <ProductDetailsModal
+      <CartDetailsModal
         ref={dialogRef}
         item={selectedItem}
         onClose={handleCloseModal}

@@ -4,7 +4,7 @@ import UsersTable from "../components/pages/Users/UsersTable";
 import EditUserModal from "../components/pages/Users/EditUserModal";
 import StatCard from "../components/ui/StatCard";
 import { Users as UsersIcon, Shield, UserCheck } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback} from "react";
 import { getAllUsers, deleteUser, updateUser, addAllUser } from "../api/usersApi";
 import { changeRole } from "../api/authApi";
 import { toast } from "sonner";
@@ -24,33 +24,39 @@ const Users = () => {
     const [selectedUser, setSelectedUser] = useState(null);
 
     //fetch all users
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await getAllUsers();
 
-                setUsers(response.data.users);
-            } catch (error) {
-                const message =
-                    error.response?.data?.message ||
-                    "Failed to fetch users. Please try again.";
+    // fetch all users
+    const fetchUsers = useCallback(async () => {
+        try {
+            setIsLoading(true);
+            setError(null);
+            
+            const response = await getAllUsers();
 
-                setError(message);
-                toast.error(message);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+            setUsers(response.data.users);
+        } catch (error) {
+            const message =
+                error.response?.data?.message ||
+                "Failed to fetch users. Please try again.";
 
-        fetchUsers();
+            setError(message);
+            toast.error(message);
+        } finally {
+            setIsLoading(false);
+        }
     }, []);
+
+    useEffect(() => {
+        fetchUsers();
+    }, [fetchUsers]);
+
 
     if (isLoading) {
         return <UsersSkeleton />;
     }
 
     if (error) {
-        return <UsersError message={error} />;
+        return <UsersError message={error}  onRetry={fetchUsers} />;
     }
     const stats = [
         {

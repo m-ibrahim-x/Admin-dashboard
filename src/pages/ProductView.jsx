@@ -69,6 +69,7 @@ const ProductView = ({ product: initialProduct }) => {
     return (
       <ProductViewError
         message={error || "The requested product does not exist or may have been removed."}
+        onRetry={fetchProduct}
       />
     );
   }

@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import OrdersFilters from "../components/pages/Orders/OrdersFilters";
 import OrdersTable from "../components/pages/Orders/OrdersTable";
 import OrderDetailsPanel from "../components/pages/Orders/OrderDetailsPanel";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import { getAllOrders } from "../api/OrdersApi";
 import OrdersSkeleton from "../skeleton/pages/OrdersSkeleton";
@@ -92,89 +92,77 @@ export default function Orders() {
   // Client-side pagination.
   const [currentPage, setCurrentPage] = useState(1);
 
+
   // Fetch every API page.
-  useEffect(() => {
-    let cancelled = false;
+  const fetchOrders = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      setIsFetchingRemaining(false);
 
-    const fetchOrders = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        setIsFetchingRemaining(false);
+      // first 20 orders
+      const firstResponse = await getAllOrders({
+        page: 1,
+        limit: PAGE_SIZE,
+      });
 
-        //  first 20 orders
-        const firstResponse = await getAllOrders({
-          page: 1,
-          limit: PAGE_SIZE,
-        });
+      const firstData = firstResponse.data;
+      const firstOrders = firstData.orders ?? [];
 
-        const firstData = firstResponse.data;
-        const firstOrders = firstData.orders ?? [];
-
-        const totalPages =
-          firstData.totalPages ??
-          Math.ceil(
-            (firstData.total ?? firstOrders.length) / PAGE_SIZE
-          );
-
-        if (cancelled) return;
-
-        setOrders(firstOrders);
-        setCurrentPage(1);
-        setLoading(false);
-
-        const remainingPages = Array.from(
-          { length: Math.max(0, totalPages - 1) },
-          (_, index) => index + 2
+      const totalPages =
+        firstData.totalPages ??
+        Math.ceil(
+          (firstData.total ?? firstOrders.length) / PAGE_SIZE
         );
 
-        if (remainingPages.length === 0) return;
+      setOrders(firstOrders);
+      setCurrentPage(1);
+      setLoading(false);
 
-        setIsFetchingRemaining(true);
+      const remainingPages = Array.from(
+        { length: Math.max(0, totalPages - 1) },
+        (_, index) => index + 2
+      );
 
-        const remainingResponses = await Promise.all(
-          remainingPages.map((page) =>
-            getAllOrders({
-              page,
-              limit: PAGE_SIZE,
-            })
-          )
-        );
+      if (remainingPages.length === 0) return;
 
-        const allOrders = [
-          ...firstOrders,
-          ...remainingResponses.flatMap(
-            (response) => response.data.orders ?? []
-          ),
-        ];
+      setIsFetchingRemaining(true);
 
-        if (!cancelled) {
-          setOrders(allOrders);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          const errorMessage =
-            err.response?.data?.message ||
-            err.message ||
-            "Failed to fetch orders";
+      const remainingResponses = await Promise.all(
+        remainingPages.map((page) =>
+          getAllOrders({
+            page,
+            limit: PAGE_SIZE,
+          })
+        )
+      );
 
-          setError(errorMessage);
-          toast.error(errorMessage);
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-          setIsFetchingRemaining(false);
-        }
-      }
-    };
+      const allOrders = [
+        ...firstOrders,
+        ...remainingResponses.flatMap(
+          (response) => response.data.orders ?? []
+        ),
+      ];
 
-    fetchOrders();
+      setOrders(allOrders);
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to fetch orders";
 
-    return () => {
-      cancelled = true;
-    };
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+      setIsFetchingRemaining(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
 
   // Apply search and all filters to the complete list.
   const filteredOrders = useMemo(() => {
@@ -331,7 +319,7 @@ export default function Orders() {
       {loading ? (
         <OrdersSkeleton />
       ) : error && orders.length === 0 ? (
-        <OrdersError message={error} />
+        <OrdersError message={error}  onRetry={fetchOrders} />
       ) : (
         <>
           <OrdersTable orders={paginatedOrders} onRowClick={handleClickOrder} />

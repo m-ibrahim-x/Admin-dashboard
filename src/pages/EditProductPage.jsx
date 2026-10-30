@@ -155,60 +155,60 @@ const EditProductPage = () => {
     };
 
     // Fetch Product
-    useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                setLoading(true);
-                setError(null);
+    const fetchProduct = useCallback(async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            
+            const response = await getProductById(id);
+            const fetchedProduct = response.data?.product || response.data;
 
-                const response = await getProductById(id);
-                const fetchedProduct = response.data?.product || response.data;
-
-                if (!fetchedProduct) {
-                    throw new Error("Product data not found in response.");
-                }
-
-                console.log(response);
-
-                // Original product data
-                setProduct(fetchedProduct);
-
-                // Editable form data
-                setFormData({
-                    name: fetchedProduct.name ?? "",
-                    shortDescription: fetchedProduct.shortDescription ?? "",
-                    description: fetchedProduct.description ?? "",
-                    price: fetchedProduct.price ?? "",
-                    discountPrice: fetchedProduct.discountPrice ?? "",
-                    stock: fetchedProduct.stock ?? "",
-                    sku: fetchedProduct.sku ?? "",
-                    category: fetchedProduct.category ?? "",
-                    subcategory: fetchedProduct.subcategory ?? "",
-                    brand: fetchedProduct.brand ?? "",
-                    tags: fetchedProduct.tags ?? [],
-                    featured: fetchedProduct.featured ?? false,
-                    isActive: fetchedProduct.isActive ?? true,
-                });
-
-                toast.success(
-                    response.data.message ||
-                    "Product fetched successfully."
-                );
-            } catch (err) {
-                const errorMessage =
-                    err.response?.data?.message ||
-                    err.message ||
-                    "Failed to fetch product. Please try again.";
-
-                setError(errorMessage);
-                toast.error(errorMessage);
-            } finally {
-                setLoading(false);
+            if (!fetchedProduct) {
+                throw new Error("Product data not found in response.");
             }
-        };
 
-        fetchProduct();
+            console.log(response);
+
+            // Original product data
+            setProduct(fetchedProduct);
+
+            // Editable form data
+            setFormData({
+                name: fetchedProduct.name ?? "",
+                shortDescription: fetchedProduct.shortDescription ?? "",
+                description: fetchedProduct.description ?? "",
+                price: fetchedProduct.price ?? "",
+                discountPrice: fetchedProduct.discountPrice ?? "",
+                stock: fetchedProduct.stock ?? "",
+                sku: fetchedProduct.sku ?? "",
+                category: fetchedProduct.category ?? "",
+                subcategory: fetchedProduct.subcategory ?? "",
+                brand: fetchedProduct.brand ?? "",
+                tags: fetchedProduct.tags ?? [],
+                featured: fetchedProduct.featured ?? false,
+                isActive: fetchedProduct.isActive ?? true,
+            });
+
+            toast.success(
+                response.data.message ||
+                "Product fetched successfully."
+            );
+        } catch (err) {
+            const errorMessage =
+                err.response?.data?.message ||
+                err.message ||
+                "Failed to fetch product. Please try again.";
+
+            setError(errorMessage);
+            toast.error(errorMessage);
+        } finally {
+            setLoading(false);
+        }
     }, [id]);
+
+    useEffect(() => {
+        fetchProduct();
+    }, [fetchProduct]);
 
     // Loading Skeleton State
     if (loading) {
@@ -220,6 +220,7 @@ const EditProductPage = () => {
         return (
             <EditProductError
                 message={error || "Product not found or unavailable."}
+                onRetry={fetchProduct}
             />
         );
     }
